@@ -228,8 +228,11 @@ include 'includes/footer.php';
         $(this).find('form').attr('action', $(e.relatedTarget).data('href'));
     });
 
-    //CSRF check is done on upload but Croppic only sends cropData in second POST request (the crop) so CSRF token is appended to image upload form here.
-    $('form.propImgUpload_imgUploadForm').append('<input type="hidden" name="_CSRF" value="<?php echo $data->csrfToken; ?>">');
+    $(function()
+    {
+        //CSRF check is done on upload but Croppic only sends cropData in second POST request (the crop) so CSRF token is appended to image upload form here.
+        $('form.propImgUpload_imgUploadForm').append('<input type="hidden" name="_CSRF" value="<?php echo $data->csrfToken; ?>">');
+    });
 
 </script>
 <link rel="stylesheet" href="/css/vendor/croppic.css"/>
