@@ -1,0 +1,26 @@
+{
+    "name": "justincdotme/bookme",
+    "description": "An application for booking a rental property.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Justin Christenson",
+            "email": "info@justinc.me"
+        }
+    ],
+    "require": {
+        "illuminate/database": "^5.0",
+        "swiftmailer/swiftmailer": "5.4.0"
+    },
+    "require-dev": {
+      "raveren/kint": "^0.9.1"
+    },
+    "config": {
+      "bin-dir": "bin"
+    },
+    "autoload": {
+      "psr-4": {
+        "bookMe\\": "src"
+      }
+    }
+}
