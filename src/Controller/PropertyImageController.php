@@ -40,9 +40,7 @@ class PropertyImageController extends Controller
         {
             $response = [
                 'status' => 'error',
-                'message' => 'csrf',
-                'this_input' => implode(' ,', $_POST),
-                'session_token' => $_SESSION['csrf_token']
+                'message' => 'csrf'
             ];
             return $this->_response->returnJson($response);
         }
@@ -129,9 +127,7 @@ class PropertyImageController extends Controller
         {
             $response = [
                 'status' => 'error',
-                'message' => 'csrf',
-                'this_input' => implode(' ,', $_POST),
-                'session_token' => $_SESSION['csrf_token']
+                'message' => 'csrf'
             ];
             return $this->_response->returnJson($response);
         }
