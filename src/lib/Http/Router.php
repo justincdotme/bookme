@@ -36,7 +36,7 @@
  * @author Justin Christenson <info@justinc.me>
  * @version 1.0.0
  * @license http://opensource.org/licenses/mit-license.php
- * @link http://bookme.justinc.me
+ * @link https://bookme.justinc.me
  *
  */
 
