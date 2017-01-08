@@ -37,7 +37,7 @@ use bookMe\Model\User;
  * @author Justin Christenson <info@justinc.me>
  * @version 1.0.0
  * @license http://opensource.org/licenses/mit-license.php
- * @link http://bookme.demos.justinc.me
+ * @link http://bookme.justinc.me
  *
  */
 

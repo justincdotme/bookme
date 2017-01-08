@@ -14,7 +14,7 @@
   
  **View Demo**
  
- [http://bookme.demos.justinc.me](http://bookme.demos.justinc.me)
+ [http://bookme.justinc.me](http://bookme.justinc.me)
  
  **Username:** demo.user@justinc.me
  
