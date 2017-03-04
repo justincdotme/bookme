@@ -1,113 +1,40 @@
-# bookMe
- bookMe is a PHP5 application for booking and managing rental property reservations. 
- 
- The goal of this project was to create a fully functional property booking application from scratch using MVC architecture.
- 
- The following features were required for this project:
- 
-  - Fully functional administration panel
-  - Property management module
-  - Property image management
-  - Text editor for property descriptions
-  - Reservation management module
-  - User management module
-  
- **View Demo**
- 
- [https://bookme.justinc.me](https://bookme.justinc.me)
- 
- **Username:** demo.user@justinc.me
- 
- **Password:** demo123
- 
- 
+<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
-## Requirements
- - This application requires the Composer Dependency Manager, located at [getcomposer.org](https://getcomposer.org/)
- - This application requires MySQL 5
- - This application requires SwiftMailer
- - This application requires the Eloquent ORM
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
+</p>
 
-## Installation
+## About Laravel
 
- Clone the repository
- 
-    git clone https://github.com/justincdotme/bookme.git
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
 
- Install the application using Composer
- 
-    composer install
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
- Set the application URL in src/config.php
- 
-    define('SITE_URL', 'http://your.url.here');
-    
- Set the application title (page title) in src/config.php
-    
-    define('SITE_NAME', 'BookMe');
-    
- Set the ZIP code (used for temperature module) in src/config.php
-    
-    define('ZIP_CODE', '98686');
-    
- Set the database credentials in src/config.php
-    
-    define('DB_HOST', 'localhost');
-    define('DB_NAME', 'database-name');
-    define('DB_USER', 'database-username');
-    define('DB_PASS', 'database-password');
-      
- Set the email configuration options in src/config.php
-    
-    define('REPLY_TO', 'reply-to@domain.com');
-    define('RETURN_PATH', 'return-path@domain.com');
-    define('EMAIL_FROM', 'email-from@domain.com');
-    
- Configure the SwiftMailer transport in src/lib/Email/Email.php ([Documentation](http://swiftmailer.org/docs/sending.html))
-  
-    $this->_transport = Swift_SmtpTransport::newInstance("smtp.mailserver.com", 25)
-        ->setUsername('username')
-        ->setPassword('password');
-      
- Set the administrative user's name and email address in src/config.php
-  
-     define('ADMIN_NAME', 'Your Name');
-     define('ADMIN_EMAIL', 'your@email.address');
-     
- Run the database migration & seed the users table by visiting the following url in your browser
-   
-     http://[yourdomain]/install.php
-   
- Delete the installation file after installation
- 
-     rm [application-dir]/public/install.php
- 
- Login and change the default password. The default password is "demo123"
- 
-     http://[yourdomain]/admin
-     Click Users > Edit Users
-     
+Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+
+## Learning Laravel
+
+Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+
+If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+
+## Contributing
+
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
 
 ## License
 
- The MIT License (MIT)
- 
- Copyright (c) 2015 Justin Christenson
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
+The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).

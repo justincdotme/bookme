@@ -1,26 +1,50 @@
 {
-    "name": "justincdotme/bookme",
-    "description": "An application for booking a rental property.",
+    "name": "laravel/laravel",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Justin Christenson",
-            "email": "info@justinc.me"
-        }
-    ],
+    "type": "project",
     "require": {
-        "illuminate/database": "^5.0",
-        "swiftmailer/swiftmailer": "5.4.0"
+        "php": ">=5.6.4",
+        "laravel/framework": "5.4.*",
+        "laravel/tinker": "~1.0"
     },
     "require-dev": {
-      "raveren/kint": "^0.9.1"
-    },
-    "config": {
-      "bin-dir": "bin"
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "~5.7"
     },
     "autoload": {
-      "psr-4": {
-        "bookMe\\": "src"
-      }
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "php artisan key:generate"
+        ],
+        "post-install-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "php artisan optimize"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan optimize"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }
