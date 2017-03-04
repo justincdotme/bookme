@@ -41,7 +41,7 @@ class PropertyTest extends TestCase
 
         $property->setRelation('state', $state);
 
-        $this->assertEquals("1234 Any St<br>\nApt. B<br>\nVancouver, WA 12345", $property->formatted_address);
+        $this->assertEquals("1234 Any St\nApt. B\nVancouver, WA 12345", $property->formatted_address);
     }
 
     /**

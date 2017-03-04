@@ -31,8 +31,8 @@ class Property extends Model
      */
     public function getFormattedAddressAttribute()
     {
-        return $this->street_address_line_1 . '<br>' . PHP_EOL .
-            ((null != $this->street_address_line_2) ? $this->street_address_line_2 . '<br>' . PHP_EOL : '').
+        return $this->street_address_line_1 . PHP_EOL .
+            ((null != $this->street_address_line_2) ? $this->street_address_line_2 . PHP_EOL : '').
             $this->city . ', ' . $this->state->abbreviation . ' ' . $this->zip;
     }
 
