@@ -23,7 +23,7 @@ class CreatePropertiesTable extends Migration
             $table->string('street_address_line_1');
             $table->string('street_address_line_2')->nullable();
             $table->string('city');
-            $table->integer('state_id')->unsigned()->index()->nullable();
+            $table->integer('state_id')->unsigned()->index();
             $table->foreign('state_id')->references('id')->on('states');
             $table->string('zip');
             $table->timestamps();

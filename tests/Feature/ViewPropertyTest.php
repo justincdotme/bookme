@@ -17,7 +17,7 @@ class ViewPropertyTest extends TestCase
      */
     public function user_can_view_a_property()
     {
-        $property = factory(Property::class)->create([
+        $property = factory(Property::class)->make([
             'name' => 'Beach House',
             'rate' => 123.45,
             'short_description' => 'Test short description',
@@ -52,7 +52,7 @@ class ViewPropertyTest extends TestCase
      */
     public function user_cannot_view_unavailable_property()
     {
-        $property = factory(Property::class)->states(['unavailable'])->create();
+        $property = factory(Property::class)->states(['unavailable'])->make();
 
         $response = $this->get('/properties/' . $property->id);
 
