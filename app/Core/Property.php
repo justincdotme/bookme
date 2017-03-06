@@ -71,13 +71,13 @@ class Property extends Model
      * @param $user
      * @param $dateStart
      * @param $dateEnd
-     * @param Reservation $reservation
-     * @return
+     * @return \App\Core\Reservation
+     * @throws AlreadyReservedException
      */
-    public function makeReservation($user, $dateStart, $dateEnd, Reservation $reservation)
+    public function makeReservation($user, $dateStart, $dateEnd)
     {
         if ($this->isAvailableBetween($dateStart, $dateEnd)) {
-            return $reservation->create([
+            return $this->reservations()->create([
                 'property_id' => $this->id,
                 'user_id' => $user->id,
                 'status' => 'pending',

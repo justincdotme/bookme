@@ -23,7 +23,7 @@ class PropertyReservationController extends Controller
         //TODO - Validate the request
         if ($user = auth()->user()) {
             $property = Property::available()->findOrFail($propertyId);
-            $reservation = $property->makeReservation($user, request('date_start'), request('date_end'), new Reservation);
+            $reservation = $property->makeReservation($user, request('date_start'), request('date_end'));
 
             return response()->json([
                 'status' => 'success',
