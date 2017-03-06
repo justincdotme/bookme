@@ -1,5 +1,7 @@
 <?php
 
+Auth::routes();
+
 Route::get('/properties/{id}', 'PropertyController@show');
 
-Auth::routes();
+Route::post('/properties/{id}/reservations', 'PropertyReservationController@store');

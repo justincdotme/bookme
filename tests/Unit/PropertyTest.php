@@ -3,7 +3,12 @@
 namespace Tests\Unit;
 
 use App\Core\Property;
+use App\Core\Reservation;
 use App\Core\State;
+use App\Core\User;
+use App\Exceptions\AlreadyReservedException;
+use Carbon\Carbon;
+use Mockery;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -56,5 +61,65 @@ class PropertyTest extends TestCase
 
         $this->assertTrue($availableProperties->contains($availableProperty));
         $this->assertFalse($availableProperties->contains($unavailableProperty));
+    }
+
+    /**
+     * @test
+     */
+    public function make_reservation_calls_create_on_reservation_model()
+    {
+        $reservation = Mockery::mock(Reservation::class);
+        $user = factory(User::class)->make();
+        $property = factory(Property::class)->make();
+
+        $reservation->shouldReceive('create')->once();
+
+        $property->makeReservation($user, Carbon::now(), Carbon::parse('+1 week'), $reservation);
+    }
+
+    /**
+     * @test
+     */
+    public function it_checks_if_property_is_available_between_dates()
+    {
+        $property = factory(Property::class)->states(['available'])->create();
+        factory(Reservation::class)->states(['pending'])->create([
+           'property_id' => $property->id,
+            'date_start' => Carbon::parse('+1 week'),
+            'date_end' => Carbon::parse('+10 days')
+        ]);
+        factory(Reservation::class)->states(['pending'])->create([
+            'property_id' => $property->id,
+            'date_start' => Carbon::parse('+2 weeks'),
+            'date_end' => Carbon::parse('+3 weeks')
+        ]);
+
+        $this->assertTrue($property->isAvailableBetween(Carbon::now(), Carbon::parse('+6 days')));
+        $this->assertFalse($property->isAvailableBetween(Carbon::parse('+2 weeks'), Carbon::parse('+3 weeks')));
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_already_reserved_exception()
+    {
+        $property = factory(Property::class)->states(['available'])->make([
+            'id' => 1
+        ]);
+        $user = factory(User::class)->make();
+        factory(Reservation::class)->create([
+            'property_id' => $property->id,
+            'date_start' => Carbon::parse('+1 week'),
+            'date_end' => Carbon::parse('+10 days')
+        ]);
+
+        try {
+            $property->makeReservation($user, Carbon::parse('+1 week'), Carbon::parse('+10 days'), new Reservation());
+            $this->expectException(AlreadyReservedException::class);
+        } catch (AlreadyReservedException $e) {
+            return;
+        }
+
+        $this->fail('Reservation succeeded even though property was already booked');
     }
 }
