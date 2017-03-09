@@ -5,3 +5,5 @@ Auth::routes();
 Route::get('/properties/{id}', 'PropertyController@show');
 
 Route::post('/properties/{id}/reservations', 'PropertyReservationController@store');
+
+Route::post('/properties/{id}/reservations/check', 'ReservationCheckController@show');

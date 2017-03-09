@@ -20,4 +20,10 @@ abstract class TestCase extends BaseTestCase
             }
         });
     }
+
+    protected function assertFieldHasValidationError($field, $response)
+    {
+        $response->assertStatus(422);
+        $this->assertArrayHasKey($field, $response->decodeResponseJson());
+    }
 }
