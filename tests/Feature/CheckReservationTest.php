@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Core\Property;
-use App\Core\User;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -62,14 +60,5 @@ class CheckReservationTest extends TestCase
         ]);
 
         $this->assertFieldHasValidationError('date_end', $invalidDateEndResponse);
-    }
-
-    protected function checkValidation(array $params)
-    {
-        $property = factory(Property::class)->states(['available'])->create();
-        $user = factory(User::class)->states(['standard'])->make();
-        $this->be($user);
-
-        return $this->json('POST', "/properties/{$property->id}/reservations/check", $params);
     }
 }
