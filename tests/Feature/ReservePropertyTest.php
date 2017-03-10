@@ -25,7 +25,7 @@ class ReservePropertyTest extends TestCase
             'date_end' => Carbon::parse('+10 days')->toDateString(),
         ]);
 
-        $unavailableResponse->assertJson([
+        $unavailableResponse->assertJsonFragment([
             'status' => 'error',
             'msg' => 'The property is unavailable for this date range.'
         ]);
@@ -41,7 +41,7 @@ class ReservePropertyTest extends TestCase
             'date_end' => Carbon::parse('+6 days')->toDateString(),
         ]);
 
-        $isAvailableResponse->assertJson([
+        $isAvailableResponse->assertJsonFragment([
             'status' => 'success',
             'msg' => 'The property is available for this date range.'
         ]);
