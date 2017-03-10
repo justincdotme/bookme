@@ -28,13 +28,4 @@ abstract class TestCase extends BaseTestCase
         $response->assertStatus(422);
         $this->assertArrayHasKey($field, $response->decodeResponseJson());
     }
-
-    protected function checkValidation(array $params)
-    {
-        $property = factory(Property::class)->states(['available'])->create();
-        $user = factory(User::class)->states(['standard'])->make();
-        $this->be($user);
-
-        return $this->json('POST', "/properties/{$property->id}/reservations/check", $params);
-    }
 }
