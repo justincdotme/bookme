@@ -25,7 +25,7 @@ class PropertyTest extends TestCase
     public function it_can_get_formatted_rate()
     {
         $property = factory(Property::class)->make([
-            'rate' => 123.45
+            'rate' => 12345
         ]);
 
         $this->assertEquals('$123.45',$property->formatted_rate);
@@ -133,7 +133,7 @@ class PropertyTest extends TestCase
     /**
      * @test
      */
-    public function it_calls_create_on_reservation_model()
+    public function it_calls_create_on_createReservation_model()
     {
         $property = factory(Property::class)->states(['available'])->make([
             'id' => 1

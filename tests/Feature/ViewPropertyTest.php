@@ -19,7 +19,7 @@ class ViewPropertyTest extends TestCase
     {
         $property = factory(Property::class)->make([
             'name' => 'Beach House',
-            'rate' => 123.45,
+            'rate' => 12345,
             'short_description' => 'Test short description',
             'long_description' => 'This is a test long description',
             'street_address_line_1' => '1234 Any St',
