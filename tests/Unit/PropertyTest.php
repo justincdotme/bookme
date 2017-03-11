@@ -8,9 +8,13 @@ use App\Core\State;
 use App\Core\User;
 use App\Exceptions\AlreadyReservedException;
 use Carbon\Carbon;
+use Faker\Generator;
+use Illuminate\Support\Facades\Cache;
+use Mockery;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Facades\App\Core\Reservation as ReservationFacade;
 
 class PropertyTest extends TestCase
 {
@@ -123,5 +127,22 @@ class PropertyTest extends TestCase
         $reservation = $property->makeReservation($user, Carbon::parse('+1 week'), Carbon::parse('+10 days'));
 
         $this->assertInstanceOf(Reservation::class, $reservation);
+    }
+
+
+    /**
+     * @test
+     */
+    public function it_calls_create_on_reservation_model()
+    {
+        $property = factory(Property::class)->states(['available'])->make([
+            'id' => 1
+        ]);
+        $user = factory(User::class)->make();
+
+        ReservationFacade::shouldReceive('create')
+            ->once();
+
+        $property->makeReservation($user, Carbon::parse('+1 week'), Carbon::parse('+10 days'));
     }
 }

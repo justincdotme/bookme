@@ -4,6 +4,7 @@ namespace App\Core;
 
 use Illuminate\Database\Eloquent\Model;
 use \App\Exceptions\AlreadyReservedException;
+use Facades\App\Core\Reservation as ReservationFacade;
 
 class Property extends Model
 {
@@ -77,7 +78,7 @@ class Property extends Model
     public function makeReservation($user, $dateStart, $dateEnd)
     {
         if ($this->isAvailableBetween($dateStart, $dateEnd)) {
-            return $this->reservations()->create([
+            return ReservationFacade::create([
                 'property_id' => $this->id,
                 'user_id' => $user->id,
                 'status' => 'pending',
