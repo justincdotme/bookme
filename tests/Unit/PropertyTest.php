@@ -8,7 +8,6 @@ use App\Core\State;
 use App\Core\User;
 use App\Exceptions\AlreadyReservedException;
 use Carbon\Carbon;
-use Mockery;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

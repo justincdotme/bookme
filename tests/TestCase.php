@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use App\Core\Property;
-use App\Core\User;
 use App\Exceptions\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
