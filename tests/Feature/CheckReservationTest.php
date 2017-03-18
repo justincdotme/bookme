@@ -15,6 +15,34 @@ class CheckReservationTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected $user;
+    protected $property;
+    protected $existingReservation;
+
+    /**
+     * @test
+     */
+    public function cancelled_reservations_do_not_count()
+    {
+        $this->existingReservation = factory(Reservation::class)->make([
+            'property_id' => 1,
+            'date_start' => Carbon::parse('+1 week'),
+            'date_end' => Carbon::parse('+10 days'),
+            'status' => 'cancelled'
+        ]);
+
+        $isAvailableResponse = $this->checkPropertyReservation([
+            'property_id' => 1,
+            'date_start' => Carbon::parse('+1 week')->toDateString(),
+            'date_end' => Carbon::parse('+10 days')->toDateString(),
+        ]);
+
+        $isAvailableResponse->assertJsonFragment([
+            'status' => 'success',
+            'msg' => 'The property is available for this date range.'
+        ]);
+    }
+
     /**
      * @test
      */
@@ -52,11 +80,11 @@ class CheckReservationTest extends TestCase
      */
     public function date_start_is_required_to_check_reservation_dates()
     {
-        $isAvailableResponse = $this->createTestReservation([
+        $this->response = $this->checkPropertyReservation([
             'date_end' => Carbon::now()->toDateString(),
         ]);
 
-        $this->assertFieldHasValidationError('date_start', $isAvailableResponse);
+        $this->assertFieldHasValidationError('date_start');
     }
 
     /**
@@ -64,11 +92,11 @@ class CheckReservationTest extends TestCase
      */
     public function date_end_is_required_to_check_reservation_dates()
     {
-        $isAvailableResponse = $this->createTestReservation([
+        $this->response = $this->checkPropertyReservation([
             'date_start' => Carbon::now()->toDateString(),
         ]);
 
-        $this->assertFieldHasValidationError('date_end', $isAvailableResponse);
+        $this->assertFieldHasValidationError('date_end');
     }
 
     /**
@@ -76,12 +104,12 @@ class CheckReservationTest extends TestCase
      */
     public function date_start_must_be_a_valid_date_to_check_reservation_dates()
     {
-        $invalidDateStartResponse = $this->createTestReservation([
+        $this->response = $this->checkPropertyReservation([
             'date_start' => 'abc123',
             'date_end' => Carbon::now()->toDateString()
         ]);
 
-        $this->assertFieldHasValidationError('date_start', $invalidDateStartResponse);
+        $this->assertFieldHasValidationError('date_start');
     }
 
     /**
@@ -89,35 +117,34 @@ class CheckReservationTest extends TestCase
      */
     public function date_end_must_be_a_valid_date_to_check_reservation_dates()
     {
-        $invalidDateEndResponse = $this->createTestReservation([
+        $this->response = $this->checkPropertyReservation([
             'date_start' => Carbon::now()->toDateString(),
             'date_end' => 'abc123'
         ]);
 
-        $this->assertFieldHasValidationError('date_end', $invalidDateEndResponse);
-    }
-
-    protected function createTestReservation(array $params)
-    {
-        $property = factory(Property::class)->states(['available'])->create();
-        $user = factory(User::class)->states(['standard'])->make();
-        $this->be($user);
-
-        return $this->json('POST', "/properties/{$property->id}/reservations/check", $params);
+        $this->assertFieldHasValidationError('date_end');
     }
 
     protected function checkPropertyReservation(array $params)
     {
-        $property = factory(Property::class)->states(['available'])->create();
-        $user = factory(User::class)->states(['standard'])->create();
-        $this->be($user);
+        if (null === $this->property) {
+            $this->property = factory(Property::class)->states(['available'])->create();
+        }
 
-        factory(Reservation::class)->create([
-            'property_id' => $property->id,
-            'date_start' => Carbon::parse('+1 week'),
-            'date_end' => Carbon::parse('+10 days')
-        ]);
+        if (null === $this->user) {
+            $this->user = factory(User::class)->states(['standard'])->create();
+        }
 
-        return $this->json('POST', "/properties/{$property->id}/reservations/check", $params);
+        $this->be($this->user);
+
+        if (null === $this->existingReservation) {
+            $this->existingReservation = factory(Reservation::class)->create([
+                'property_id' => $this->property->id,
+                'date_start' => Carbon::parse('+1 week'),
+                'date_end' => Carbon::parse('+10 days')
+            ]);
+        }
+
+        return $this->json('POST', "/properties/{$this->property->id}/reservations/check", $params);
     }
 }

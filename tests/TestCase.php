@@ -10,6 +10,12 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected $response;
+
+    /**
+     * Utility method to disable exception handling.
+     * Useful when we need to see a stack trace.
+     */
     protected function disableExceptionHandling()
     {
         $this->app->instance(ExceptionHandler::class, new class extends Handler {
@@ -21,9 +27,14 @@ abstract class TestCase extends BaseTestCase
         });
     }
 
-    protected function assertFieldHasValidationError($field, $response)
+    /**
+     * Helper method to test that a specific field has a validation error.
+     *
+     * @param $field
+     */
+    protected function assertFieldHasValidationError($field)
     {
-        $response->assertStatus(422);
-        $this->assertArrayHasKey($field, $response->decodeResponseJson());
+        $this->response->assertStatus(422);
+        $this->assertArrayHasKey($field, $this->response->decodeResponseJson());
     }
 }
