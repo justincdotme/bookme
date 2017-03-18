@@ -2,9 +2,8 @@
 
 namespace App\Core;
 
+use App\Exceptions\AlreadyReservedException;
 use Illuminate\Database\Eloquent\Model;
-use \App\Exceptions\AlreadyReservedException;
-use Facades\App\Core\Reservation as ReservationFacade;
 
 class Property extends Model
 {
@@ -33,7 +32,7 @@ class Property extends Model
      */
     public function getFormattedRateAttribute()
     {
-        return money_format('%.2n', $this->rate);
+        return money_format('%.2n', ($this->rate / 100));
     }
 
     /**
@@ -68,17 +67,10 @@ class Property extends Model
         })->get()->isEmpty();
     }
 
-    /**
-     * @param $user
-     * @param $dateStart
-     * @param $dateEnd
-     * @return \App\Core\Reservation
-     * @throws AlreadyReservedException
-     */
-    public function makeReservation($user, $dateStart, $dateEnd)
+    public function reserveFor($dateStart, $dateEnd, $user)
     {
         if ($this->isAvailableBetween($dateStart, $dateEnd)) {
-            return ReservationFacade::create([
+            return Reservation::create([
                 'property_id' => $this->id,
                 'user_id' => $user->id,
                 'status' => 'pending',

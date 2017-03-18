@@ -3,7 +3,7 @@
 $factory->define(App\Core\Property::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
-        'rate' => $faker->randomFloat(2),
+        'rate' => $faker->randomNumber(),
         'short_description' => $faker->words(3, true),
         'long_description' => $faker->sentences(3, true),
         'street_address_line_1' => $faker->streetAddress,
