@@ -10,7 +10,7 @@ $factory->define(App\Core\Property::class, function (Faker\Generator $faker) {
         'street_address_line_2' => null,
         'city' => $faker->city,
         'state_id' => 1,
-        'zip' => $faker->postcode,
+        'zip' => rand(11111, 99999),
         'status' => 'available'
     ];
 });

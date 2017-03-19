@@ -146,6 +146,32 @@ class AddPropertyTest extends TestCase
     /**
      * @test
      */
+    public function zip_code_is_required()
+    {
+        $values = factory(Property::class)->states(['available'])->make()->toArray();
+        unset($values['zip']);
+
+        $this->response = $this->editProperty($values, false);
+
+        $this->assertFieldHasValidationError('zip');
+    }
+
+    /**
+     * @test
+     */
+    public function zip_code_must_be_an_integer()
+    {
+        $values = factory(Property::class)->states(['available'])->make()->toArray();
+        $values['zip'] = 'code';
+
+        $this->response = $this->editProperty($values, false);
+
+        $this->assertFieldHasValidationError('zip');
+    }
+
+    /**
+     * @test
+     */
     public function it_creates_a_new_property()
     {
         $state = factory(State::class)->create();

@@ -17,7 +17,8 @@ class Property extends Model
         'status' => 'required',
         'street_address_line_1' => 'required',
         'city' => 'required',
-        'state_id' => 'required|integer'
+        'state_id' => 'required|integer',
+        'zip' => 'required|integer'
     ];
 
     /**
@@ -76,6 +77,12 @@ class Property extends Model
         })->get()->isEmpty();
     }
 
+    /**
+     * @param $dateStart
+     * @param $dateEnd
+     * @param $user
+     * @return mixed
+     */
     public function reserveFor($dateStart, $dateEnd, $user)
     {
         if ($this->isAvailableBetween($dateStart, $dateEnd)) {
