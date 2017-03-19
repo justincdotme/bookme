@@ -9,3 +9,5 @@ Route::post('/properties/{id}/reservations', 'PropertyReservationController@stor
 Route::post('/properties/{id}/reservations/check', 'ReservationCheckController@show');
 
 Route::post('/properties', 'PropertyController@store')->middleware('can:create,App\Core\Property');
+
+Route::put('/properties/{id}', 'PropertyController@update')->middleware('can:update,App\Core\Property');

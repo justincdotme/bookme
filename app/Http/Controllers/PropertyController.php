@@ -30,4 +30,14 @@ class PropertyController extends Controller
             'property_id' => $newProperty->id
         ], 201);
     }
+
+    public function update($propertyId, Property $property)
+    {
+        $this->validate(request(), $property->rules);
+        $property->find($propertyId)->update(request()->except('id'));
+
+        return response()->json([
+            'status' => 'success'
+        ]);
+    }
 }
