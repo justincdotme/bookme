@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class PropertyController extends Controller
 {
     /**
-     * Display the specified resource.
+     * Show a property
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -20,6 +20,12 @@ class PropertyController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created property.
+     *
+     * @param Property $property
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Property $property)
     {
         $this->validate(request(), $property->rules);
@@ -31,6 +37,13 @@ class PropertyController extends Controller
         ], 201);
     }
 
+    /**
+     * Updated an existing property.
+     *
+     * @param $propertyId
+     * @param Property $property
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($propertyId, Property $property)
     {
         $this->validate(request(), $property->rules);

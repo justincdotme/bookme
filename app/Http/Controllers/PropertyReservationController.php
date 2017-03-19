@@ -18,7 +18,7 @@ class PropertyReservationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new property reservation.
      *
      * @return \Illuminate\Http\Response
      */

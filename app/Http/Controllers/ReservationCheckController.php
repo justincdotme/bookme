@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class ReservationCheckController extends Controller
 {
+    /**
+     * Check if a property is reserved for a specific data.
+     *
+     * @param $propertyId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($propertyId)
     {
         $this->validate(request(), [
