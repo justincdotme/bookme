@@ -9,11 +9,12 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AddPropertyTest extends TestCase
+class AddEditPropertyTest extends TestCase
 {
     use DatabaseMigrations;
 
     protected $property;
+    protected $user;
 
     /**
      * @test
@@ -22,7 +23,7 @@ class AddPropertyTest extends TestCase
     {
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->addProperty();
+        $response = $this->createProperty([], true);
 
         $response->assertStatus(200);
     }
@@ -34,9 +35,19 @@ class AddPropertyTest extends TestCase
     {
         $this->user = factory(User::class)->states(['standard'])->make();
 
-        $response = $this->addProperty();
+        $response = $this->createProperty([], true);
 
         $response->assertStatus(403);
+    }
+
+    /**
+     * @test
+     */
+    public function property_name_is_required_to_create_property()
+    {
+        $this->response = $this->createProperty([], false);
+
+        $this->assertFieldHasValidationError('name');
     }
 
     /**
@@ -45,7 +56,7 @@ class AddPropertyTest extends TestCase
      * @param array $params
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
-    protected function addProperty(array $params = null)
+    protected function createProperty(array $params, $autoPolulate = true)
     {
         if (null === $this->property) {
             $this->property = factory(Property::class)->states(['available'])->create();
@@ -55,12 +66,11 @@ class AddPropertyTest extends TestCase
             $this->user = factory(User::class)->states(['admin'])->create();
         }
 
-        if (null == $params) {
+        if ($autoPolulate) {
             $params = $this->property->toArray();
         }
 
         $this->be($this->user);
-
         return $this->json('POST', "/properties", $params);
     }
 }

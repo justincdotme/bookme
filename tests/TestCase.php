@@ -34,7 +34,8 @@ abstract class TestCase extends BaseTestCase
      */
     protected function assertFieldHasValidationError($field)
     {
+        $errorBag = $this->response->decodeResponseJson()['errors'];
         $this->response->assertStatus(422);
-        $this->assertArrayHasKey($field, $this->response->decodeResponseJson());
+        $this->assertArrayHasKey($field, $errorBag);
     }
 }

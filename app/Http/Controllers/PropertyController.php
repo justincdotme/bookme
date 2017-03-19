@@ -22,6 +22,11 @@ class PropertyController extends Controller
 
     public function store()
     {
+        $this->validate(request(), [
+            'name' => 'required'
+        ]);
+
+        //TODO - Handle photo upload
         return Property::create(request()->except('id'));
     }
 }
