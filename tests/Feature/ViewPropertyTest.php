@@ -52,7 +52,7 @@ class ViewPropertyTest extends TestCase
      */
     public function user_cannot_view_unavailable_property()
     {
-        $property = factory(Property::class)->states(['unavailable'])->make();
+        $property = factory(Property::class)->states(['unavailable'])->create();
 
         $response = $this->get('/properties/' . $property->id);
 

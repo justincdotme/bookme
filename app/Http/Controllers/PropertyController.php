@@ -19,4 +19,9 @@ class PropertyController extends Controller
             'property' => Property::available()->findOrFail($id)
         ]);
     }
+
+    public function store()
+    {
+        return Property::create(request()->except('id'));
+    }
 }
