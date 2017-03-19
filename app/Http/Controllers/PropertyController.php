@@ -23,8 +23,11 @@ class PropertyController extends Controller
     public function store(Property $property)
     {
         $this->validate(request(), $property->rules);
-
+        $newProperty = Property::create(request()->except('id'));
         //TODO - Handle photo upload
-        return Property::create(request()->except('id'));
+        return response()->json([
+            'status' => 'success',
+            'property_id' => $newProperty->id
+        ], 201);
     }
 }

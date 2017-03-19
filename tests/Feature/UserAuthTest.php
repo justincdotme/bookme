@@ -13,7 +13,7 @@ class UserAuthTest extends TestCase
     /**
      * @test
      */
-    public function it_redirects_admin_users_to_admin_route()
+    public function it_redirects_authenticated_admin_users_to_admin_route()
     {
         $user = factory(User::class)->states(['admin'])->make();
         $this->be($user);
@@ -26,7 +26,7 @@ class UserAuthTest extends TestCase
     /**
      * @test
      */
-    public function it_redirects_standard_users_to_home_route()
+    public function it_redirects_authenticated_standard_users_to_home_route()
     {
         $user = factory(User::class)->states(['standard'])->make();
         $this->be($user);

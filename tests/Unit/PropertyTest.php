@@ -114,7 +114,7 @@ class PropertyTest extends TestCase
     /**
      * @test
      */
-    public function it_makes_a_reservation()
+    public function reserveFor_returns_reservation()
     {
         $property = factory(Property::class)->states(['available'])->make([
             'id' => 1
@@ -122,6 +122,7 @@ class PropertyTest extends TestCase
         $user = factory(User::class)->make([
             'id' => 1
         ]);
+
         $dateStart = Carbon::parse('+1 week');
         $dateEnd = Carbon::parse('+10 days');
         $reservation = $property->reserveFor($dateStart, $dateEnd, $user);
