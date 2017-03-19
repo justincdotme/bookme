@@ -13,6 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         \App\Core\Property::class => \App\Policies\PropertyPolicy::class,
+        \App\Core\PropertyImage::class => \App\Policies\PropertyImagePolicy::class,
     ];
 
     /**
