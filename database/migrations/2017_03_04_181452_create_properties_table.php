@@ -16,7 +16,7 @@ class CreatePropertiesTable extends Migration
         Schema::create('properties', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('rate');
+            $table->integer('rate')->nullable();
             $table->string('short_description')->nullable();
             $table->text('long_description')->nullable();
             $table->enum('status', ['available', 'unavailable']);

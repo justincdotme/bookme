@@ -11,6 +11,14 @@ class Property extends Model
 
     protected $with = ['state'];
 
+    public $rules = [
+        'name' => 'required',
+        'status' => 'required',
+        'street_address_line_1' => 'required',
+        'city' => 'required',
+        'state_id' => 'required|integer'
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

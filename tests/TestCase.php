@@ -2,8 +2,12 @@
 
 namespace Tests;
 
+use App\Core\Property;
+use App\Core\State;
+use App\Core\User;
 use App\Exceptions\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -11,6 +15,9 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     protected $response;
+    protected $property;
+    protected $user;
+    protected $state;
 
     /**
      * Utility method to disable exception handling.
@@ -37,5 +44,53 @@ abstract class TestCase extends BaseTestCase
         $errorBag = $this->response->decodeResponseJson()['errors'];
         $this->response->assertStatus(422);
         $this->assertArrayHasKey($field, $errorBag);
+    }
+
+    /**
+     * Utility method to add a property.
+     *
+     * @param array $params
+     * @return \Illuminate\Foundation\Testing\TestResponse
+     */
+    protected function createProperty(array $params, $autoPolulate = true)
+    {
+        if (null === $this->property) {
+            $this->property = factory(Property::class)->states(['available'])->create();
+        }
+
+        if (null === $this->user) {
+            $this->user = factory(User::class)->states(['admin'])->create();
+        }
+
+        if (null === $this->state) {
+            $this->state = factory(State::class)->create();
+        }
+
+        if ($autoPolulate) {
+            $params = $this->property->toArray();
+            $params['state_id'] = $this->state->id;
+        }
+
+        $this->be($this->user);
+        return $this->json('POST', "/properties", $params);
+
+    }
+
+    protected function editProperty($params, $autoPolulate = true)
+    {
+        if (null === $this->property) {
+            $this->property = factory(Property::class)->states(['available'])->create();
+        }
+
+        if (null === $this->user) {
+            $this->user = factory(User::class)->states(['admin'])->create();
+        }
+
+        if ($autoPolulate) {
+            $params = $this->property->toArray();
+        }
+
+        $this->be($this->user);
+        return $this->json('PUT', "/properties/{$this->property->id}", $params);
     }
 }
