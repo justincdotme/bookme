@@ -119,6 +119,33 @@ class AddPropertyTest extends TestCase
     /**
      * @test
      */
+    public function if_rate_is_supplied_rate_must_be_an_integer()
+    {
+        $values = factory(Property::class)->states(['available'])->make([
+            'rate' => 123.45
+        ])->toArray();
+
+        $this->response = $this->createProperty($values, false);
+
+        $this->assertFieldHasValidationError('rate');
+    }
+
+    /**
+     * @test
+     */
+    public function rate_is_not_required()
+    {
+        $values = factory(Property::class)->states(['available'])->make()->toArray();
+        unset($values['rate']);
+
+        $response = $this->createProperty($values, false);
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
     public function it_creates_a_new_property()
     {
         $notFoundResponse = $this->json('GET', "/properties/1");

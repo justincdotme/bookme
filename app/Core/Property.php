@@ -12,6 +12,7 @@ class Property extends Model
     protected $with = ['state'];
 
     public $rules = [
+        'rate' => 'integer',
         'name' => 'required',
         'status' => 'required',
         'street_address_line_1' => 'required',
