@@ -10,12 +10,11 @@ class StripePaymentGateway implements PaymentGatewayInterface
 {
     const TEST_CARD_NUMBER = '4242424242424242';
 
-    protected $charges;
+    protected $charge;
     protected $apiKey;
 
     function __construct($apiKey)
     {
-        $this->charges = collect([]);
         $this->apiKey = $apiKey;
     }
 
@@ -43,11 +42,11 @@ class StripePaymentGateway implements PaymentGatewayInterface
             throw new PaymentFailedException();
         }
 
-        return $this->charges->push($amount);
+        return $this->charge = $amount;
     }
 
     public function getTotalCharges()
     {
-        return $this->charges->sum();
+        return $this->charge;
     }
 }

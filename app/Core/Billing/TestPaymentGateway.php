@@ -4,12 +4,7 @@ namespace App\Core\Billing;
 
 class TestPaymentGateway implements PaymentGatewayInterface
 {
-    protected $charges;
-
-    function __construct()
-    {
-        $this->charges = collect();
-    }
+    protected $charge;
 
     public function getValidTestToken()
     {
@@ -22,11 +17,11 @@ class TestPaymentGateway implements PaymentGatewayInterface
             throw new PaymentFailedException();
         }
 
-        $this->charges->push($amount);
+        $this->charge = $amount;
     }
 
     public function getTotalCharges()
     {
-        return $this->charges->sum();
+        return $this->charge;
     }
 }
