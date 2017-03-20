@@ -16,10 +16,6 @@ class PropertyImageController extends Controller
         $slash = DIRECTORY_SEPARATOR;
         $propertyImagePath = storage_path("app{$slash}public{$slash}properties{$slash}{$propertyId}{$slash}");
 
-        if (!Storage::exists($propertyImagePath)) {
-            Storage::makeDirectory($propertyImagePath);
-        }
-
         $file = request()->file('image')->move($propertyImagePath);
 
         return response()->json([
