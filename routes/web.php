@@ -13,5 +13,5 @@ Route::group(['middleware' => ['admin']], function () {
 
     Route::put('/properties/{id}', 'PropertyController@update');
 
-    Route::post('/properties/{id}/photos', 'PropertyImageController@store');
+    Route::post('/properties/{id}/photos/upload', 'PropertyImageUploadController@store');
 });

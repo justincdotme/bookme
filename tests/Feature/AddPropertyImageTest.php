@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class PropertyImageUploadTest extends TestCase
+class AddPropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -23,7 +23,7 @@ class PropertyImageUploadTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos", [
+        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos/upload", [
             'image' => UploadedFile::fake()->image('test-image.png'),
         ]);
 
@@ -46,7 +46,7 @@ class PropertyImageUploadTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos", [
+        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos/upload", [
             'image1' => UploadedFile::fake()->image('test-image.png'),
         ]);
 
@@ -61,7 +61,7 @@ class PropertyImageUploadTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos", [
+        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos/upload", [
             'image' => UploadedFile::fake()->create('test-file.txt'),
         ]);
 
@@ -75,7 +75,7 @@ class PropertyImageUploadTest extends TestCase
     {
         $this->user = $this->user = factory(User::class)->states(['standard'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/1/photos", [
+        $response = $this->actingAs($this->user)->post("/properties/1/photos/upload", [
             'image' => UploadedFile::fake()->image('test-image.png'),
         ]);
 
