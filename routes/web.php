@@ -8,13 +8,10 @@ Route::post('/properties/{id}/reservations', 'PropertyReservationController@stor
 
 Route::post('/properties/{id}/reservations/check', 'ReservationCheckController@show');
 
-//TODO - We are only checking for admin privileges here.
-//TODO - Perhaps a route group that checks isAdmin via middleware would be more appropriate.
-Route::post('/properties', 'PropertyController@store')
-    ->middleware('can:create,App\Core\Property');
+Route::group(['middleware' => ['admin']], function () {
+    Route::post('/properties', 'PropertyController@store');
 
-Route::put('/properties/{id}', 'PropertyController@update')
-    ->middleware('can:update,App\Core\Property');
+    Route::put('/properties/{id}', 'PropertyController@update');
 
-Route::post('/properties/{id}/photos', 'PropertyImageController@store')
-    ->middleware('can:create,App\Core\PropertyImage');
+    Route::post('/properties/{id}/photos', 'PropertyImageController@store');
+});
