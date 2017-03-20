@@ -181,11 +181,11 @@ class AddPropertyTest extends TestCase
         $user = factory(User::class)->states(['admin'])->create();
         $params = $property->toArray();
 
-        $this->be($user);
-        $response = $this->json('POST', "/properties", $params);
-        $jsonResponse = $response->assertStatus(201)->decodeResponseJson();
+        $response = $this->actingAs($user)
+            ->json('POST', "/properties", $params);
 
-        $newProperty = Property::find($jsonResponse['property_id']);
+        $response->assertStatus(201);
+        $newProperty = Property::find($response->decodeResponseJson()['property_id']);
         $this->assertNotNull($newProperty);
         $this->assertEquals($property->name, $newProperty->name);
     }
@@ -197,11 +197,10 @@ class AddPropertyTest extends TestCase
     {
         $property = factory(Property::class)->states(['available'])->make();
         $user = factory(User::class)->states(['admin'])->create();
-
         $params = $property->toArray();
 
-        $this->be($user);
-        $response = $this->json('POST', "/properties", $params);
+        $response = $this->actingAs($user)->json('POST', "/properties", $params);
+
         $response->assertJsonFragment([
             'status' => 'success',
             'property_id' => 1

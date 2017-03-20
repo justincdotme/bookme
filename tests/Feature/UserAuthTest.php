@@ -16,8 +16,8 @@ class UserAuthTest extends TestCase
     public function it_redirects_authenticated_admin_users_to_admin_route()
     {
         $user = factory(User::class)->states(['admin'])->make();
-        $this->be($user);
-        $response = $this->get('/login');
+
+        $response = $this->actingAs($user)->get('/login');
 
         $response->assertStatus(302);
         $response->assertRedirect('/admin');

@@ -135,8 +135,6 @@ class CheckReservationTest extends TestCase
             $this->user = factory(User::class)->states(['standard'])->create();
         }
 
-        $this->be($this->user);
-
         if (null === $this->existingReservation) {
             $this->existingReservation = factory(Reservation::class)->create([
                 'property_id' => $this->property->id,
@@ -145,6 +143,6 @@ class CheckReservationTest extends TestCase
             ]);
         }
 
-        return $this->json('POST', "/properties/{$this->property->id}/reservations/check", $params);
+        return $this->actingAs($this->user)->json('POST', "/properties/{$this->property->id}/reservations/check", $params);
     }
 }

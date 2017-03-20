@@ -177,9 +177,8 @@ class EditPropertyTest extends TestCase
     public function cannot_update_property_that_doesnt_exist()
     {
         $this->user = factory(User::class)->states(['admin'])->create();
-        $this->be($this->user);
 
-        $response = $this->json('PUT', "/properties/3", []);
+        $response = $this->actingAs($this->user)->json('PUT', "/properties/3", []);
 
         $response->assertStatus(422);
     }
