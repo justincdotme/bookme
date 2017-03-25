@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Core\Billing\PaymentGatewayInterface;
 use App\Core\Billing\TestPaymentGateway;
-use App\Core\Property;
+use App\Core\Property\Property;
 use App\Core\Reservation;
 use App\Core\User;
 use Carbon\Carbon;
@@ -122,19 +122,14 @@ class ReservePropertyTest extends TestCase
      */
     public function it_returns_not_found_exception_for_missing_or_invalid_property_id()
     {
-        $this->disableExceptionHandling();
         $params = [
             'date_start' => Carbon::parse('+1 week'),
             'date_end' => Carbon::parse('+10 days')
         ];
 
-        try {
-            $this->json('POST', "/properties//reservations", $params);
-        } catch (NotFoundHttpException $e) {
-            return;
-        }
+        $response = $this->json('POST', "/properties//reservations", $params);
 
-        $this->fail('Request succeeded without property id.');
+        $response->assertStatus(404);
     }
 
     /**
