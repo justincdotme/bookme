@@ -7,6 +7,22 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+    public function index()
+    {
+        $properties = Property::available()->paginate(10);
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'properties' => $properties
+            ], 200);
+        }
+
+        return view('public.properties.index', [
+            'properties' => $properties
+        ]);
+    }
+
     /**
      * Show a property
      *

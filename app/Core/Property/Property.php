@@ -39,11 +39,17 @@ class Property extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function images()
     {
         return $this->hasMany(PropertyImage::class);
     }
 
+    /**
+     * @return Model
+     */
     public function makeImage()
     {
         return $this->images()->create([]);
