@@ -38,6 +38,7 @@ class PropertyImageController extends Controller
             app()->make(ImageManager::class)
         )->processUpload($image, $imageData);
 
+        //TODO - Use Queue worker for this event.
         event(new PropertyImageUploadProcessed($image->getRealPath()));
 
         return response()->json([
