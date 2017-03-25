@@ -4,7 +4,8 @@ $factory->define(App\Core\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
-        'name' => $faker->name,
+        'first_name' => $faker->name,
+        'last_name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'role_id' => 1,
