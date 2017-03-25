@@ -6,9 +6,14 @@ use App\Core\Payment\PaymentGatewayInterface;
 use App\Core\Payment\TestPaymentGateway;
 use App\Core\Property\Property;
 use App\Core\Reservation;
+use App\Core\State;
 use App\Core\User;
 use Carbon\Carbon;
+use EmailTestHelpers;
+use Illuminate\Support\Facades\Mail;
+use Swift_Message;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use TestingMailEventListener;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -17,6 +22,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ReservePropertyTest extends TestCase
 {
     use DatabaseMigrations;
+    use EmailTestHelpers;
 
     protected $paymentGateway;
     protected $property;
@@ -27,6 +33,8 @@ class ReservePropertyTest extends TestCase
         parent::setUp($name, $data, $dataName);
         $this->app->instance(PaymentGatewayInterface::class, new TestPaymentGateway());
         $this->paymentGateway = app()->make(PaymentGatewayInterface::class);
+        Mail::getSwiftMailer()
+            ->registerPlugin(new TestingMailEventListener($this));
     }
 
     /**
@@ -38,10 +46,17 @@ class ReservePropertyTest extends TestCase
             'id' => 1,
             'email' => 'foo@bar.com'
         ]);
-        $this->property= factory(Property::class)->create([
+
+        $this->property = factory(Property::class)->make([
             'id' => 1,
             'rate' => 50000
         ]);
+        $state = factory(State::class)->create([
+            'abbreviation' => 'WA'
+        ]);
+
+        $this->property->state()->associate($state);
+        $this->property->save();
 
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::now()->toDateString(),
@@ -77,6 +92,46 @@ class ReservePropertyTest extends TestCase
     /**
      * @test
      */
+    public function it_sends_a_confirmation_email_for_successful_reservation()
+    {
+        $this->disableExceptionHandling();
+        $this->user = factory(User::class)->states(['standard'])->make([
+            'id' => 1,
+            'email' => 'foo@fighter.com'
+        ]);
+        $this->property = factory(Property::class)->make();
+        $state = factory(State::class)->create([
+            'abbreviation' => 'WA'
+        ]);
+        $this->property->state()->associate($state);
+        $this->property->save();
+
+        $dateStart = Carbon::now();
+        $dateEnd = Carbon::parse('+1 week');
+        $this->response = $this->reserveProperty([
+            'date_start' => $dateStart->toDateString(),
+            'date_end' => $dateEnd->toDateString(),
+            'payment_token' => $this->paymentGateway->getValidTestToken()
+        ]);
+
+        $this->seeEmailWasSent();
+        $this->seeEmailsSent(1);
+        $this->seeEmailTo($this->user->email);
+        $this->seeEmailFrom('no-reply@bookme.justinc.me');
+        $this->seeEmailContains("Thank you for your reservation, {$this->user->name}");
+        $this->seeEmailContains("Check In: {$dateStart->toFormattedDateString()}");
+        $this->seeEmailContains("Check Out: {$dateEnd->toFormattedDateString()}");
+        $this->seeEmailContains("Length of Stay: 7 days.");
+        $this->seeEmailContains("Reservation Number: 1");
+        $this->seeEmailContains("Name: {$this->property->name}");
+        $this->seeEmailContains("Address: " . nl2br($this->property->formatted_address));
+    }
+
+
+
+    /**
+     * @test
+     */
     public function it_returns_error_when_property_is_already_reserved()
     {
         factory(Reservation::class)->create([
@@ -105,6 +160,12 @@ class ReservePropertyTest extends TestCase
             'date_start' => Carbon::parse('+2 days')->toDateString(),
             'date_end' => Carbon::parse('+4 days')->toDateString()
         ]);
+        $this->property = factory(Property::class)->make();
+        $state = factory(State::class)->create([
+            'abbreviation' => 'WA'
+        ]);
+        $this->property->state()->associate($state);
+        $this->property->save();
 
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::parse('+1 week')->toDateString(),

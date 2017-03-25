@@ -6,7 +6,9 @@ use App\Core\Payment\PaymentFailedException;
 use App\Core\Property\Property;
 use App\Exceptions\AlreadyReservedException;
 use App\Core\Payment\PaymentGatewayInterface;
+use App\Mail\ReservationComplete;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PropertyReservationController extends Controller
 {
@@ -35,7 +37,11 @@ class PropertyReservationController extends Controller
 
             try {
                 $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
+
                 $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
+
+                Mail::to($user)->send(new ReservationComplete($user, $reservation, config('mail')));
+
                 return response()->json([
                     'status' => 'success',
                     'reservation' => $confirmation

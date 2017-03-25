@@ -19,21 +19,35 @@ class Reservation extends Model
         return $query->where('status', '!=', 'cancelled');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function property()
     {
         return $this->belongsTo(Property::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return mixed
+     */
     public function getLengthOfStay()
     {
         return $this->date_end->diffInDays($this->date_start);
     }
 
+    /**
+     * @param $paymentGateway
+     * @param $token
+     * @return bool
+     */
     public function complete($paymentGateway, $token)
     {
         $paymentGateway->charge($this->calculateTotal(), $token);
@@ -43,6 +57,9 @@ class Reservation extends Model
         ]);
     }
 
+    /**
+     * @return bool
+     */
     public function cancel()
     {
         return $this->update([
@@ -50,8 +67,27 @@ class Reservation extends Model
         ]);
     }
 
+    /**
+     * @return mixed
+     */
     public function calculateTotal()
     {
         return ($this->property->rate * $this->getLengthOfStay());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormattedDateStartAttribute()
+    {
+        return $this->date_start->toFormattedDateString();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFormattedDateEndAttribute()
+    {
+        return $this->date_end->toFormattedDateString();
     }
 }

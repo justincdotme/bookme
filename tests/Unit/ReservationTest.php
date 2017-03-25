@@ -70,4 +70,32 @@ class ReservationTest extends TestCase
         $reservation->cancel();
         $this->assertEquals('cancelled', $reservation->status);
     }
+
+    /**
+     * @test
+     */
+    public function it_can_get_formatted_date_start()
+    {
+        $reservation = factory(Reservation::class)->make([
+            'date_start' => Carbon::now(),
+            'date_end' => Carbon::parse('+1 week'),
+        ]);
+        $formattedDate = Carbon::parse($reservation->date_start)->toFormattedDateString();
+
+        $this->assertEquals($formattedDate, $reservation->formatted_date_start);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_formatted_date_end()
+    {
+        $reservation = factory(Reservation::class)->make([
+            'date_start' => Carbon::now(),
+            'date_end' => Carbon::parse('+1 week'),
+        ]);
+        $formattedDate = Carbon::parse($reservation->date_end)->toFormattedDateString();
+
+        $this->assertEquals($formattedDate, $reservation->formatted_date_end);
+    }
 }
