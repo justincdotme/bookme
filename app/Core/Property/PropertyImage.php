@@ -9,7 +9,6 @@ class PropertyImage extends Model
     protected $guarded = [];
     protected $extension;
     protected $imageManager;
-    protected $originalImage;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -26,7 +25,6 @@ class PropertyImage extends Model
      */
     public function processUpload($image, $imageData)
     {
-        $this->originalImage = $image;
         $this->extension = $image->guessExtension();
         $fullPath = $this->generateFullSize(
             $image->getPathname(),
@@ -41,7 +39,6 @@ class PropertyImage extends Model
             'thumb_path' => $thumbPath,
         ]);
 
-        //TODO - Emit event to clean up temp images
         return $this;
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Core\Property\Property;
+use App\Events\PropertyImageUploadProcessed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
@@ -36,6 +37,8 @@ class PropertyImageController extends Controller
         $propertyImage->setImageManager(
             app()->make(ImageManager::class)
         )->processUpload($image, $imageData);
+
+        event(new PropertyImageUploadProcessed($image->getRealPath()));
 
         return response()->json([
             'status' => 'success',
