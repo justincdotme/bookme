@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Core\Billing\PaymentGatewayInterface;
 use App\Core\Billing\StripePaymentGateway;
-use App\Core\Billing\TestPaymentGateway;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
