@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Core\Billing\PaymentFailedException;
-use App\Core\Property;
+use App\Core\Property\Property;
 use App\Exceptions\AlreadyReservedException;
 use App\Core\Billing\PaymentGatewayInterface;
 use Illuminate\Http\Request;

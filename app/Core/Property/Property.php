@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Property;
 
+use App\Core\Reservation;
+use App\Core\State;
 use App\Exceptions\AlreadyReservedException;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,6 +37,16 @@ class Property extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(PropertyImage::class);
+    }
+
+    public function makeImage()
+    {
+        return $this->images()->create([]);
     }
 
     /**

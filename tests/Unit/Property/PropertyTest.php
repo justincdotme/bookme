@@ -2,7 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Core\Property;
+use App\Core\Property\Property;
+use App\Core\Property\PropertyImage;
 use App\Core\Reservation;
 use App\Core\State;
 use App\Core\User;
@@ -11,7 +12,6 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Facades\App\Core\Reservation as ReservationFacade;
 
 class PropertyTest extends TestCase
 {
@@ -128,5 +128,20 @@ class PropertyTest extends TestCase
         $reservation = $property->reserveFor($dateStart, $dateEnd, $user);
 
         $this->assertInstanceOf(Reservation::class, $reservation);
+    }
+
+    /**
+     * @test
+     */
+    public function makeImage_returns_a_propertyImage_model()
+    {
+        $property = factory(Property::class)->states(['available'])->make([
+            'id' => 1
+        ]);
+
+        $propertyImage = $property->makeImage();
+
+        $this->assertInstanceOf(PropertyImage::class, $propertyImage);
+        $this->assertEquals($property->id, $propertyImage->property_id);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Core\Property;
+use App\Core\Property\Property;
 use App\Core\Reservation;
 use Carbon\Carbon;
 use Tests\TestCase;

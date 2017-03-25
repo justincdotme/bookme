@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Core\Property;
+use App\Core\Property\Property;
 use App\Core\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -15,6 +15,12 @@ class AddPropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
 
+    public function tearDown()
+    {
+        File::deleteDirectory(storage_path("app/public/images/properties/"));
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
@@ -23,30 +29,37 @@ class AddPropertyImageTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos/upload", [
+        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/images", [
             'image' => UploadedFile::fake()->image('test-image.png'),
+            'height' => 400,
+            'width' => 200,
+            'x' => 107.4,
+            'y' => 129.12
         ]);
 
-        $filePath = $response->decodeResponseJson()['path'];
         $response->assertStatus(201);
         $response->assertJsonFragment([
             'status' => 'success'
         ]);
-        $this->assertFileExists($filePath);
-
-        //Cleanup
-        File::deleteDirectory(storage_path("app/public/properties"));
+        $response->assertJsonStructure([
+            'status',
+            'full_path',
+            'thumb_path'
+        ]);
+        $jsonResponse = $response->decodeResponseJson();
+        $this->assertFileExists($jsonResponse['full_path']);
+        $this->assertFileExists($jsonResponse['thumb_path']);
     }
 
     /**
      * @test
      */
-    public function image_is_required_for_property_image_upload()
+    public function image_is_required_for_upload()
     {
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos/upload", [
+        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/images", [
             'image1' => UploadedFile::fake()->image('test-image.png'),
         ]);
 
@@ -61,7 +74,7 @@ class AddPropertyImageTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/photos/upload", [
+        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/images", [
             'image' => UploadedFile::fake()->create('test-file.txt'),
         ]);
 
@@ -71,11 +84,11 @@ class AddPropertyImageTest extends TestCase
     /**
      * @test
      */
-    public function only_authenticated_admin_users_can_upload_property_images()
+    public function non_admin_users_cannot_upload_property_images()
     {
-        $this->user = $this->user = factory(User::class)->states(['standard'])->create();
+        $this->user = factory(User::class)->states(['standard'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/1/photos/upload", [
+        $response = $this->actingAs($this->user)->post("/properties/1/images", [
             'image' => UploadedFile::fake()->image('test-image.png'),
         ]);
 

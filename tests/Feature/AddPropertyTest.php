@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Core\Property;
+use App\Core\Property\Property;
 use App\Core\State;
 use App\Core\User;
 use Tests\TestCase;

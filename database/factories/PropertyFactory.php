@@ -1,6 +1,6 @@
 <?php
 
-$factory->define(App\Core\Property::class, function (Faker\Generator $faker) {
+$factory->define(App\Core\Property\Property::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'rate' => $faker->randomNumber(),
@@ -15,13 +15,13 @@ $factory->define(App\Core\Property::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->state(App\Core\Property::class, 'available', function (Faker\Generator $faker) {
+$factory->state(App\Core\Property\Property::class, 'available', function (Faker\Generator $faker) {
     return [
         'status' => 'available'
     ];
 });
 
-$factory->state(App\Core\Property::class, 'unavailable', function (Faker\Generator $faker) {
+$factory->state(App\Core\Property\Property::class, 'unavailable', function (Faker\Generator $faker) {
     return [
         'status' => 'unavailable'
     ];

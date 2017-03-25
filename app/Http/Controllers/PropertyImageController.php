@@ -2,25 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Core\Property\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 
 class PropertyImageController extends Controller
 {
-    public function store($propertyId)
+    /**
+     * @param $propertyId
+     * @param Property $property
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store($propertyId, Property $property)
     {
         $this->validate(request(), [
             'image' => 'required|mimes:jpeg,png,gif'
         ]);
 
-        $slash = DIRECTORY_SEPARATOR;
-        $propertyImagePath = storage_path("app{$slash}public{$slash}properties{$slash}{$propertyId}{$slash}");
+        $image = request()->file('image')->move(
+            config('filesystems.property.image') . $propertyId . DIRECTORY_SEPARATOR
+        );
+        $imageData = request()->only([
+            'height',
+            'width',
+            'x',
+            'y'
+        ]);
 
-        $file = request()->file('image')->move($propertyImagePath);
+        $propertyImage = $property->find($propertyId)->makeImage();
+
+        $propertyImage->setImageManager(
+            app()->make(ImageManager::class)
+        )->processUpload($image, $imageData);
 
         return response()->json([
             'status' => 'success',
-            'path' => $file->getPathname()
+            'full_path' => $propertyImage->full_path,
+            'thumb_path' => $propertyImage->thumb_path
         ], 201);
     }
 }

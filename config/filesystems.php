@@ -65,4 +65,7 @@ return [
 
     ],
 
+    'property' => [
+        'image' => storage_path() . DIRECTORY_SEPARATOR . env('PROPERTY_IMAGE_PATH') . 'properties' . DIRECTORY_SEPARATOR,
+    ],
 ];

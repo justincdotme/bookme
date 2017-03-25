@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Property;
+use App\Core\Property\Property;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -22,7 +22,8 @@ class ReservationCheckController extends Controller
         ]);
 
         if (Property::find($propertyId)->isAvailableBetween(
-                Carbon::parse(request('date_start')), Carbon::parse(request('date_end'))
+                Carbon::parse(request('date_start')),
+                Carbon::parse(request('date_end'))
             )
         ) {
             return response()->json([

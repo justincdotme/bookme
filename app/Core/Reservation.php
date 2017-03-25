@@ -2,9 +2,7 @@
 
 namespace App\Core;
 
-use App\Core\Billing\PaymentFailedException;
-use App\Exceptions\AlreadyReservedException;
-use Carbon\Carbon;
+use App\Core\Property\Property;
 use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
@@ -47,7 +45,6 @@ class Reservation extends Model
 
     public function cancel()
     {
-        //TODO - Expand this to check for and refund any charges for the current reservation.
         return $this->update([
             'status' => 'cancelled'
         ]);

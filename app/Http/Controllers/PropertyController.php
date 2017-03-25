@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Property;
+use App\Core\Property\Property;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -30,7 +30,7 @@ class PropertyController extends Controller
     {
         $this->validate(request(), $property->rules);
         $newProperty = Property::create(request()->except('id'));
-        //TODO - Handle photo upload
+
         return response()->json([
             'status' => 'success',
             'property_id' => $newProperty->id
