@@ -1,5 +1,5 @@
 <?php
 
-namespace App\Core\Billing;
+namespace App\Core\Payment;
 
 class PaymentFailedException extends \RuntimeException {}

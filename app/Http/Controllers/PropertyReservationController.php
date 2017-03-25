@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Billing\PaymentFailedException;
+use App\Core\Payment\PaymentFailedException;
 use App\Core\Property\Property;
 use App\Exceptions\AlreadyReservedException;
-use App\Core\Billing\PaymentGatewayInterface;
+use App\Core\Payment\PaymentGatewayInterface;
 use Illuminate\Http\Request;
 
 class PropertyReservationController extends Controller

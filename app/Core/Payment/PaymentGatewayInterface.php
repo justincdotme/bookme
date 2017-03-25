@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Billing;
+namespace App\Core\Payment;
 
 interface PaymentGatewayInterface {
 

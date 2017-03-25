@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Core\Billing\PaymentGatewayInterface;
-use App\Core\Billing\StripePaymentGateway;
+use App\Core\Payment\PaymentGatewayInterface;
+use App\Core\Payment\StripePaymentGateway;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

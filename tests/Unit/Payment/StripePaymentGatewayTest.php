@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Billing;
+namespace Tests\Unit\Payment;
 
-use App\Core\Billing\PaymentFailedException;
-use App\Core\Billing\StripePaymentGateway;
+use App\Core\Payment\PaymentFailedException;
+use App\Core\Payment\StripePaymentGateway;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

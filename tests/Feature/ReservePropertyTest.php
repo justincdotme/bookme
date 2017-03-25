@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Core\Billing\PaymentGatewayInterface;
-use App\Core\Billing\TestPaymentGateway;
+use App\Core\Payment\PaymentGatewayInterface;
+use App\Core\Payment\TestPaymentGateway;
 use App\Core\Property\Property;
 use App\Core\Reservation;
 use App\Core\User;
