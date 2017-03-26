@@ -22,8 +22,10 @@ class PropertyController extends Controller
      */
     public function show($id)
     {
+        $property = Property::available()->findOrFail($id);
         return view('public.properties.show', [
-            'property' => Property::available()->findOrFail($id)
+            'property' => $property,
+            'images' => $property->images()->take(10)
         ]);
     }
 }

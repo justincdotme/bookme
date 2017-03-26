@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Core\Property\Property;
+use App\Core\Property\PropertyImage;
 use App\Core\State;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -17,25 +18,9 @@ class ViewPropertyTest extends TestCase
      */
     public function user_can_view_a_property()
     {
-        $property = factory(Property::class)->make([
-            'name' => 'Beach House',
-            'rate' => 12345,
-            'short_description' => 'Test short description',
-            'long_description' => 'This is a test long description',
-            'street_address_line_1' => '1234 Any St',
-            'street_address_line_2' => 'Apt. B',
-            'city' => 'Vancouver',
-            'zip' => 12345
-        ]);
+        $this->makeTestProperty();
 
-        $state = factory(State::class)->create([
-            'abbreviation' => 'WA'
-        ]);
-
-        $property->state()->associate($state);
-        $property->save();
-
-        $response = $this->get('/properties/' . $property->id);
+        $response = $this->get('/properties/' . $this->property->id);
 
         $response->assertStatus(200);
         $response->assertSee('Beach House');
@@ -57,5 +42,68 @@ class ViewPropertyTest extends TestCase
         $response = $this->get('/properties/' . $property->id);
 
         $response->assertStatus(404);
+    }
+
+    /**
+     * @test
+     */
+    public function property_images_are_included_in_html_on_initial_load_if_property_has_images()
+    {
+        $this->makeTestProperty()->addImages(5);
+
+        $response = $this->get('/properties/' . $this->property->id);
+
+        $response->assertStatus(200);
+        $response->assertViewHas('images');
+        $response->assertSee('<div id="image-container">');
+        $response->assertDontSee('<span>There are no images for this property.</span>');
+    }
+
+    /**
+     * @test
+     */
+    public function alternate_message_is_shown_if_property_has_no_images()
+    {
+        $this->makeTestProperty();
+
+        $response = $this->get('/properties/' . $this->property->id);
+
+        $response->assertStatus(200);
+        $response->assertViewHas('images');
+        $response->assertSee('<span>There are no images for this property.</span>');
+    }
+
+    protected function makeTestProperty()
+    {
+        $this->property = factory(Property::class)->make([
+            'name' => 'Beach House',
+            'rate' => 12345,
+            'short_description' => 'Test short description',
+            'long_description' => 'This is a test long description',
+            'street_address_line_1' => '1234 Any St',
+            'street_address_line_2' => 'Apt. B',
+            'city' => 'Vancouver',
+            'zip' => 12345
+        ]);
+
+        $this->state = factory(State::class)->create([
+            'abbreviation' => 'WA'
+        ]);
+
+        $this->property->state()->associate($this->state);
+        $this->property->save();
+
+        return $this;
+    }
+
+    protected function addImages($count)
+    {
+        if ($count) {
+            factory(PropertyImage::class, $count)->create([
+                'property_id' => $this->property->id
+            ]);
+        }
+
+        return $this;
     }
 }
