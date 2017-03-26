@@ -11,8 +11,6 @@ use App\Core\User;
 use Carbon\Carbon;
 use EmailTestHelpers;
 use Illuminate\Support\Facades\Mail;
-use Swift_Message;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use TestingMailEventListener;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -70,34 +68,6 @@ class ReservePropertyTest extends TestCase
         $this->assertEquals(350000, $this->paymentGateway->getTotalCharges());
         $this->assertEquals(350000, $reservation->amount);
         $this->assertEquals('foo@bar.com', $reservation->user->email);
-    }
-
-    /**
-     * @test
-     */
-    public function charge_id_is_saved_on_successful_reservation()
-    {
-        $this->user = factory(User::class)->states(['standard'])->create();
-        $this->property = factory(Property::class)->make();
-        $state = factory(State::class)->create([
-            'abbreviation' => 'WA'
-        ]);
-        $this->property->state()->associate($state);
-        $this->property->save();
-
-        $this->response = $this->reserveProperty([
-            'date_start' => Carbon::now()->toDateString(),
-            'date_end' => Carbon::parse('+1 week')->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken()
-        ]);
-
-        $chargeId = $this->property->reservations()->first()->charge_id;
-        $this->assertNotNull($chargeId);
-        $this->assertStringStartsWith(
-            'ch_',
-            $chargeId,
-            'A valid charge ID was not returned'
-        );
     }
 
     /**

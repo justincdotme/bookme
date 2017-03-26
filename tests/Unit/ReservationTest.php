@@ -2,8 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Core\Payment\TestPaymentGateway;
 use App\Core\Property\Property;
 use App\Core\Reservation;
+use App\Core\State;
+use App\Core\User;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -97,5 +100,28 @@ class ReservationTest extends TestCase
         $formattedDate = Carbon::parse($reservation->date_end)->toFormattedDateString();
 
         $this->assertEquals($formattedDate, $reservation->formatted_date_end);
+    }
+
+    /**
+     * @test
+     *
+     */
+    public function charge_id_is_persisted_on_successful_reservation()
+    {
+        $property = factory(Property::class)->create();
+        $reservation = factory(Reservation::class)->create([
+            'property_id' => $property->id
+        ]);
+        $paymentGateway = new TestPaymentGateway;
+        $token = $paymentGateway->getValidTestToken();
+
+        $reservation->complete($paymentGateway, $token);
+
+        $this->assertNotNull($reservation->charge_id);
+        $this->assertStringStartsWith(
+            'ch_',
+            $reservation->charge_id,
+            'A valid charge ID was not returned'
+        );
     }
 }
