@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AdminShowReservationTest extends TestCase
+class AdminViewReservationTest extends TestCase
 {
     use DatabaseMigrations;
 
