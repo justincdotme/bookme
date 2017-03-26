@@ -57,10 +57,12 @@ class PropertyTest extends TestCase
         $availableProperty = factory(Property::class)->states(['available'])->create();
         $unavailableProperty = factory(Property::class)->states(['unavailable'])->create();
 
-        $availableProperties = Property::available()->get();
+        $availableProperties = Property::get();
+        $unavailableProperties = Property::withoutGLobalScopes()->get();
 
         $this->assertTrue($availableProperties->contains($availableProperty));
         $this->assertFalse($availableProperties->contains($unavailableProperty));
+        $this->assertTrue($unavailableProperties->contains($unavailableProperty));
     }
 
     /**

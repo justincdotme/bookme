@@ -22,12 +22,12 @@ class PropertyReservationController extends Controller
     /**
      * Create a new property reservation.
      *
+     * @param Property $property
      * @return \Illuminate\Http\Response
      */
-    public function store($propertyId)
+    public function store($property)
     {
         if ($user = auth()->user()) {
-            $property = Property::available()->findOrFail($propertyId);
 
             $this->validate(request(), [
                 'date_start' => 'required|date',

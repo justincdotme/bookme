@@ -4,22 +4,22 @@ Auth::routes();
 
 Route::get('/properties', 'PropertyController@index');
 
-Route::get('/properties/{id}', 'PropertyController@show');
+Route::get('/properties/{property}', 'PropertyController@show');
 
-Route::post('/properties/{id}/reservations', 'PropertyReservationController@store');
+Route::post('/properties/{property}/reservations', 'PropertyReservationController@store');
 
-Route::post('/properties/{id}/reservations/check', 'ReservationCheckController@show');
+Route::post('/properties/{property}/reservations/check', 'ReservationCheckController@show');
 
-Route::get('/properties/{id}/images', 'PropertyImageController@index');
+Route::get('/properties/{property}/images', 'PropertyImageController@index');
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/properties', 'Admin\PropertyController@index');
 
     Route::post('/properties', 'Admin\PropertyController@store');
 
-    Route::put('/properties/{id}', 'Admin\PropertyController@update');
+    Route::put('/properties/{property}', 'Admin\PropertyController@update');
 
-    Route::post('/properties/{id}/images', 'Admin\PropertyImageController@store');
+    Route::post('/properties/{property}/images', 'Admin\PropertyImageController@store');
 
-    Route::delete('/properties/{id}/images/{imageId}', 'Admin\PropertyImageController@destroy');
+    Route::delete('/properties/{property}/images/{image}', 'Admin\PropertyImageController@destroy');
 });

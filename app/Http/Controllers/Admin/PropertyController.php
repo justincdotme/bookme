@@ -8,11 +8,14 @@ use App\Http\Controllers\Controller;
 
 class PropertyController extends Controller
 {
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         return response()->json([
             'status' => 'success',
-            'properties' => Property::available()->paginate(10)
+            'properties' => Property::withoutGLobalScopes()->paginate(10)
         ], 200);
 
     }
@@ -26,25 +29,26 @@ class PropertyController extends Controller
     public function store(Property $property)
     {
         $this->validate(request(), $property->rules);
-        $newProperty = Property::create(request()->except('id'));
+
+        $propertyId = $property->create(request()->except('id'))->id;
 
         return response()->json([
             'status' => 'success',
-            'property_id' => $newProperty->id
+            'property_id' => $propertyId
         ], 201);
     }
 
     /**
      * Updated an existing property.
      *
-     * @param $propertyId
      * @param Property $property
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($propertyId, Property $property)
+    public function update($property)
     {
         $this->validate(request(), $property->rules);
-        $property->find($propertyId)->update(request()->except('id'));
+
+        $property->update(request()->except('id'));
 
         return response()->json([
             'status' => 'success'

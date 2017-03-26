@@ -7,22 +7,24 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('public.properties.index', [
-            'properties' => Property::available()->paginate(10)
+            'properties' => Property::paginate(10)
         ]);
     }
 
     /**
      * Show a property
      *
-     * @param  int  $id
+     * @param  $property
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($property)
     {
-        $property = Property::available()->findOrFail($id);
         return view('public.properties.show', [
             'property' => $property,
             'images' => $property->images()->take(10)

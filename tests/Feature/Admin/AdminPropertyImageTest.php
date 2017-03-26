@@ -88,8 +88,9 @@ class AdminPropertyImageTest extends TestCase
     public function non_admin_users_cannot_upload_property_images()
     {
         $this->user = factory(User::class)->states(['standard'])->create();
+        $this->property = factory(Property::class)->create();
 
-        $response = $this->actingAs($this->user)->post("/admin/properties/1/images", [
+        $response = $this->actingAs($this->user)->post("/admin/properties/{$this->property->id}/images", [
             'image' => UploadedFile::fake()->image('test-image.png'),
         ]);
 

@@ -12,18 +12,17 @@ use Intervention\Image\ImageManager;
 class PropertyImageController extends Controller
 {
     /**
-     * @param $propertyId
      * @param Property $property
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store($propertyId, Property $property)
+    public function store($property)
     {
         $this->validate(request(), [
             'image' => 'required|mimes:jpeg,png,gif'
         ]);
 
         $image = request()->file('image')->move(
-            config('filesystems.property.image') . $propertyId . DIRECTORY_SEPARATOR
+            config('filesystems.property.image') . $property->id . DIRECTORY_SEPARATOR
         );
         $imageData = request()->only([
             'height',
@@ -32,7 +31,7 @@ class PropertyImageController extends Controller
             'y'
         ]);
 
-        $propertyImage = $property->find($propertyId)->makeImage();
+        $propertyImage = $property->makeImage();
 
         $propertyImage->setImageManager(
             app()->make(ImageManager::class)
@@ -47,10 +46,13 @@ class PropertyImageController extends Controller
         ], 201);
     }
 
-    public function destroy($imageId)
+    /**
+     * @param $property
+     * @param $image
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($property, $image)
     {
-        $image = PropertyImage::find($imageId);
-
         File::delete($image->full_path);
         File::delete($image->thumb_path);
 

@@ -5,6 +5,7 @@ namespace App\Core\Property;
 use App\Core\Reservation;
 use App\Core\State;
 use App\Exceptions\AlreadyReservedException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
@@ -22,6 +23,14 @@ class Property extends Model
         'state_id' => 'required|integer',
         'zip' => 'required|integer'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('available', function (Builder $builder) {
+            $builder->where('status', 'available');
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -71,15 +80,6 @@ class Property extends Model
         return $this->street_address_line_1 . PHP_EOL .
             ((null != $this->street_address_line_2) ? $this->street_address_line_2 . PHP_EOL : '') .
             $this->city . ', ' . $this->state->abbreviation . ' ' . $this->zip;
-    }
-
-    /**
-     * @param $query
-     * @return mixed
-     */
-    public function scopeAvailable($query)
-    {
-        return $query->where('status', 'available');
     }
 
     /**

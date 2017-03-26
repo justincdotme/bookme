@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 class PropertyImageController extends Controller
 {
     /**
-     * @param $propertyId
+     * @param $property
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($propertyId)
+    public function index($property)
     {
         return response()->json([
             'status' => 'success',
-            'images' => Property::find($propertyId)->images()->paginate(10)
+            'images' => $property->images()->paginate(10)
         ]);
     }
 }

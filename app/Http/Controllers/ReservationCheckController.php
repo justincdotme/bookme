@@ -11,17 +11,17 @@ class ReservationCheckController extends Controller
     /**
      * Check if a property is reserved for a specific data.
      *
-     * @param $propertyId
+     * @param $property
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($propertyId)
+    public function show($property)
     {
         $this->validate(request(), [
             'date_start' => 'required|date',
             'date_end' => 'required|date'
         ]);
 
-        if (Property::find($propertyId)->isAvailableBetween(
+        if ($property->isAvailableBetween(
                 Carbon::parse(request('date_start')),
                 Carbon::parse(request('date_end'))
             )

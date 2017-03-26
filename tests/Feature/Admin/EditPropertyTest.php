@@ -180,6 +180,6 @@ class EditPropertyTest extends TestCase
 
         $response = $this->actingAs($this->user)->json('PUT', "/admin/properties/3", []);
 
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 }
