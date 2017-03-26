@@ -9,17 +9,8 @@ class PropertyController extends Controller
 {
     public function index()
     {
-        $properties = Property::available()->paginate(10);
-
-        if (request()->expectsJson()) {
-            return response()->json([
-                'status' => 'success',
-                'properties' => $properties
-            ], 200);
-        }
-
         return view('public.properties.index', [
-            'properties' => $properties
+            'properties' => Property::available()->paginate(10)
         ]);
     }
 
@@ -33,40 +24,6 @@ class PropertyController extends Controller
     {
         return view('public.properties.show', [
             'property' => Property::available()->findOrFail($id)
-        ]);
-    }
-
-    /**
-     * Store a newly created property.
-     *
-     * @param Property $property
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(Property $property)
-    {
-        $this->validate(request(), $property->rules);
-        $newProperty = Property::create(request()->except('id'));
-
-        return response()->json([
-            'status' => 'success',
-            'property_id' => $newProperty->id
-        ], 201);
-    }
-
-    /**
-     * Updated an existing property.
-     *
-     * @param $propertyId
-     * @param Property $property
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update($propertyId, Property $property)
-    {
-        $this->validate(request(), $property->rules);
-        $property->find($propertyId)->update(request()->except('id'));
-
-        return response()->json([
-            'status' => 'success'
         ]);
     }
 }

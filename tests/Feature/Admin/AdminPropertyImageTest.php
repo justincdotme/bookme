@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Admin;
 
 use App\Core\Property\Property;
 use App\Core\Property\PropertyImage;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class PropertyImageTest extends TestCase
+class AdminPropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -30,7 +30,7 @@ class PropertyImageTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/images", [
+        $response = $this->actingAs($this->user)->post("/admin/properties/{$this->property->id}/images", [
             'image' => UploadedFile::fake()->image('test-image.png'),
             'height' => 400,
             'width' => 200,
@@ -60,7 +60,7 @@ class PropertyImageTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/images", [
+        $response = $this->actingAs($this->user)->post("/admin/properties/{$this->property->id}/images", [
             'image1' => UploadedFile::fake()->image('test-image.png'),
         ]);
 
@@ -75,7 +75,7 @@ class PropertyImageTest extends TestCase
         $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/{$this->property->id}/images", [
+        $response = $this->actingAs($this->user)->post("/admin/properties/{$this->property->id}/images", [
             'image' => UploadedFile::fake()->create('test-file.txt'),
         ]);
 
@@ -89,7 +89,7 @@ class PropertyImageTest extends TestCase
     {
         $this->user = factory(User::class)->states(['standard'])->create();
 
-        $response = $this->actingAs($this->user)->post("/properties/1/images", [
+        $response = $this->actingAs($this->user)->post("/admin/properties/1/images", [
             'image' => UploadedFile::fake()->image('test-image.png'),
         ]);
 
@@ -113,7 +113,7 @@ class PropertyImageTest extends TestCase
             'full_path' => $testFull,
         ]);
 
-        $response = $this->actingAs($this->user)->delete("/properties/{$this->property->id}/images/{}");
+        $response = $this->actingAs($this->user)->delete("/admin/properties/{$this->property->id}/images/{}");
 
         $response->assertStatus(200);
         $this->assertFileNotExists($testFull);

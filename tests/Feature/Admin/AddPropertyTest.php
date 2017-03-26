@@ -1,41 +1,43 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Admin;
 
 use App\Core\Property\Property;
+use App\Core\State;
 use App\Core\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class EditPropertyTest extends TestCase
+class AddPropertyTest extends TestCase
 {
     use DatabaseMigrations;
 
     /**
      * @test
      */
-    public function admin_users_can_edit_properties()
+    public function admin_users_can_add_properties()
     {
         $this->user = factory(User::class)->states(['admin'])->create();
 
-        $response = $this->editProperty([], true);
+        $response = $this->createProperty([], true);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
     }
 
     /**
      * @test
      */
-    public function standard_users_cannot_update_properties()
+    public function standard_users_cannot_add_properties()
     {
         $this->user = factory(User::class)->states(['standard'])->make();
 
-        $response = $this->editProperty([], true);
+        $response = $this->createProperty([], true);
 
         $response->assertStatus(403);
     }
+
     /**
      * @test
      */
@@ -44,7 +46,7 @@ class EditPropertyTest extends TestCase
         $values = factory(Property::class)->states(['available'])->make()->toArray();
         unset($values['name']);
 
-        $this->response = $this->editProperty($values, false);
+        $this->response = $this->createProperty($values, false);
 
         $this->assertFieldHasValidationError('name');
     }
@@ -57,7 +59,7 @@ class EditPropertyTest extends TestCase
         $values = factory(Property::class)->states(['available'])->make()->toArray();
         unset($values['status']);
 
-        $this->response = $this->editProperty($values, false);
+        $this->response = $this->createProperty($values, false);
 
         $this->assertFieldHasValidationError('status');
     }
@@ -70,7 +72,7 @@ class EditPropertyTest extends TestCase
         $values = factory(Property::class)->states(['available'])->make()->toArray();
         unset($values['street_address_line_1']);
 
-        $this->response = $this->editProperty($values, false);
+        $this->response = $this->createProperty($values, false);
 
         $this->assertFieldHasValidationError('street_address_line_1');
     }
@@ -83,7 +85,7 @@ class EditPropertyTest extends TestCase
         $values = factory(Property::class)->states(['available'])->make()->toArray();
         unset($values['city']);
 
-        $this->response = $this->editProperty($values, false);
+        $this->response = $this->createProperty($values, false);
 
         $this->assertFieldHasValidationError('city');
     }
@@ -96,7 +98,7 @@ class EditPropertyTest extends TestCase
         $values = factory(Property::class)->states(['available'])->make()->toArray();
         unset($values['state_id']);
 
-        $this->response = $this->editProperty($values, false);
+        $this->response = $this->createProperty($values, false);
 
         $this->assertFieldHasValidationError('state_id');
     }
@@ -109,9 +111,36 @@ class EditPropertyTest extends TestCase
         $values = factory(Property::class)->states(['available'])->make()->toArray();
         $values['state_id'] = 'WA';
 
-        $this->response = $this->editProperty($values, false);
+        $this->response = $this->createProperty($values, false);
 
         $this->assertFieldHasValidationError('state_id');
+    }
+
+    /**
+     * @test
+     */
+    public function rate_is_not_required()
+    {
+        $values = factory(Property::class)->states(['available'])->make()->toArray();
+        unset($values['rate']);
+
+        $response = $this->createProperty($values, false);
+
+        $response->assertStatus(201);
+    }
+
+    /**
+     * @test
+     */
+    public function rate_must_be_an_integer()
+    {
+        $values = factory(Property::class)->states(['available'])->make([
+            'rate' => 123.45
+        ])->toArray();
+
+        $this->response = $this->createProperty($values, false);
+
+        $this->assertFieldHasValidationError('rate');
     }
 
     /**
@@ -143,43 +172,38 @@ class EditPropertyTest extends TestCase
     /**
      * @test
      */
-    public function it_edits_an_existing_property()
+    public function it_creates_a_new_property()
     {
-        $this->property = factory(Property::class)->create([
-            'name' => 'Beach House',
-            'rate' => 12345,
-            'short_description' => 'Test short description',
-            'long_description' => 'This is a test long description',
-            'street_address_line_1' => '1234 Any St',
-            'street_address_line_2' => 'Apt. B',
-            'city' => 'Vancouver',
-            'state_id' => 1,
-            'zip' => 12345
+        $state = factory(State::class)->create();
+        $property = factory(Property::class)->states(['available'])->make([
+            'state_id' => $state->id
         ]);
+        $user = factory(User::class)->states(['admin'])->create();
+        $params = $property->toArray();
 
-        $data = $this->property->toArray();
-        $data['name'] = 'Foo House';
-        $data['rate'] = 9999;
-        $response = $this->editProperty($data, false);
+        $response = $this->actingAs($user)
+            ->json('POST', "/admin/properties", $params);
 
-        $modifiedProperty = Property::find($this->property->id);
-        $response->assertStatus(200);
-        $response->assertJsonFragment([
-            'status' => 'success'
-        ]);
-        $this->assertNotEquals($modifiedProperty->name, $this->property->name);
-        $this->assertNotEquals($modifiedProperty->rate, $this->property->rate);
+        $response->assertStatus(201);
+        $newProperty = Property::find($response->decodeResponseJson()['property_id']);
+        $this->assertNotNull($newProperty);
+        $this->assertEquals($property->name, $newProperty->name);
     }
 
     /**
      * @test
      */
-    public function cannot_update_property_that_doesnt_exist()
+    public function it_returns_new_property_id()
     {
-        $this->user = factory(User::class)->states(['admin'])->create();
+        $property = factory(Property::class)->states(['available'])->make();
+        $user = factory(User::class)->states(['admin'])->create();
+        $params = $property->toArray();
 
-        $response = $this->actingAs($this->user)->json('PUT', "/properties/3", []);
+        $response = $this->actingAs($user)->json('POST', "/admin/properties", $params);
 
-        $response->assertStatus(422);
+        $response->assertJsonFragment([
+            'status' => 'success',
+            'property_id' => 1
+        ]);
     }
 }

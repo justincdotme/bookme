@@ -64,6 +64,13 @@ class StripePaymentGatewayTest extends TestCase
 
     protected function fetchLastCharge()
     {
-        return \Stripe\Charge::all(['limit' => 1], ['api_key' => config('services.stripe.secret')])['data'][0];
+        return \Stripe\Charge::all(
+            [
+                'limit' => 1
+            ],
+            [
+                'api_key' => config('services.stripe.secret')
+            ]
+        )['data'][0];
     }
 }

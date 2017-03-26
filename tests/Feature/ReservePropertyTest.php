@@ -94,7 +94,6 @@ class ReservePropertyTest extends TestCase
      */
     public function it_sends_a_confirmation_email_for_successful_reservation()
     {
-        $this->disableExceptionHandling();
         $this->user = factory(User::class)->states(['standard'])->make([
             'id' => 1,
             'email' => 'foo@fighter.com'
@@ -183,12 +182,15 @@ class ReservePropertyTest extends TestCase
      */
     public function it_returns_not_found_exception_for_missing_or_invalid_property_id()
     {
+        $this->user = factory(User::class)->states(['standard'])->create([
+            'id' => 1
+        ]);
         $params = [
             'date_start' => Carbon::parse('+1 week'),
             'date_end' => Carbon::parse('+10 days')
         ];
 
-        $response = $this->json('POST', "/properties//reservations", $params);
+        $response = $this->actingAs($this->user)->json('POST', "/properties/x/reservations", $params);
 
         $response->assertStatus(404);
     }

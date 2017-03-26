@@ -10,12 +10,14 @@ Route::post('/properties/{id}/reservations', 'PropertyReservationController@stor
 
 Route::post('/properties/{id}/reservations/check', 'ReservationCheckController@show');
 
-Route::group(['middleware' => ['admin']], function () {
-    Route::post('/properties', 'PropertyController@store');
+Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
+    Route::get('/properties', 'Admin\PropertyController@index');
 
-    Route::put('/properties/{id}', 'PropertyController@update');
+    Route::post('/properties', 'Admin\PropertyController@store');
 
-    Route::post('/properties/{id}/images', 'PropertyImageController@store');
+    Route::put('/properties/{id}', 'Admin\PropertyController@update');
 
-    Route::delete('/properties/{id}/images/{imageId}', 'PropertyImageController@destroy');
+    Route::post('/properties/{id}/images', 'Admin\PropertyImageController@store');
+
+    Route::delete('/properties/{id}/images/{imageId}', 'Admin\PropertyImageController@destroy');
 });

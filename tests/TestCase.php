@@ -7,7 +7,6 @@ use App\Core\State;
 use App\Core\User;
 use App\Exceptions\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
-
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\File;
 
@@ -76,7 +75,7 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->be($this->user);
-        return $this->json('POST', "/properties", $params);
+        return $this->json('POST', "/admin/properties", $params);
 
     }
 
@@ -95,7 +94,7 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->be($this->user);
-        return $this->json('PUT', "/properties/{$this->property->id}", $params);
+        return $this->json('PUT', "/admin/properties/{$this->property->id}", $params);
     }
 
 
