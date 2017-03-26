@@ -20,7 +20,6 @@ class AdminPropertyListTest extends TestCase
      */
     public function it_returns_paginated_view_with_10_properties_per_page()
     {
-        $this->disableExceptionHandling();
         $properties = factory(Property::class, 20)->make();
         $this->user = factory(User::class)->states(['admin'])->create();
         $state = factory(State::class)->create([
