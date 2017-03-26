@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Core\Property\Property;
 use App\Core\Property\PropertyImage;
-use App\Events\PropertyImageUploadProcessed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
@@ -38,8 +37,7 @@ class PropertyImageController extends Controller
             app()->make(ImageManager::class)
         )->processUpload($image, $imageData);
 
-        //TODO - Use Queue worker for this event.
-        event(new PropertyImageUploadProcessed($image->getRealPath()));
+        File::delete($image->getRealPath());
 
         return response()->json([
             'status' => 'success',
