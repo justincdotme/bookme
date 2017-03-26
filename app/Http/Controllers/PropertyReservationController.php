@@ -40,7 +40,7 @@ class PropertyReservationController extends Controller
 
                 $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
 
-                Mail::to($user)->send(new ReservationComplete($user, $reservation, config('mail')));
+                Mail::to($user)->send(new ReservationComplete($user, $confirmation, config('mail')));
 
                 return response()->json([
                     'status' => 'success',
