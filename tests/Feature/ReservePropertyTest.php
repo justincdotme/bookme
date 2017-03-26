@@ -77,19 +77,11 @@ class ReservePropertyTest extends TestCase
      */
     public function charge_id_is_saved_on_successful_reservation()
     {
-        $this->user = factory(User::class)->states(['standard'])->create([
-            'id' => 1,
-            'email' => 'foo@bar.com'
-        ]);
-
-        $this->property = factory(Property::class)->make([
-            'id' => 1,
-            'rate' => 50000
-        ]);
+        $this->user = factory(User::class)->states(['standard'])->create();
+        $this->property = factory(Property::class)->make();
         $state = factory(State::class)->create([
             'abbreviation' => 'WA'
         ]);
-
         $this->property->state()->associate($state);
         $this->property->save();
 
