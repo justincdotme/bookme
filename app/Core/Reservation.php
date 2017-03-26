@@ -10,6 +10,8 @@ class Reservation extends Model
     protected $guarded = [];
 
     protected $dates = ['date_start', 'date_end'];
+
+    protected $with = ['property'];
     /**
      * @param $query
      * @return mixed

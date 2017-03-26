@@ -233,4 +233,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
     ],
 
+    'payment' => [
+        'url' => env('STRIPE_PAYMENT_URL')
+    ]
 ];
