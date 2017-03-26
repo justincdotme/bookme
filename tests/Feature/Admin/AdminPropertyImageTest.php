@@ -113,7 +113,7 @@ class AdminPropertyImageTest extends TestCase
             'full_path' => $testFull,
         ]);
 
-        $response = $this->actingAs($this->user)->delete("/admin/properties/{$this->property->id}/images/{}");
+        $response = $this->actingAs($this->user)->delete("/admin/properties/{$this->property->id}/images/{$this->propertyImage->id}");
 
         $response->assertStatus(200);
         $this->assertFileNotExists($testFull);
