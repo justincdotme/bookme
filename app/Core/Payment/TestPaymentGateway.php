@@ -18,6 +18,8 @@ class TestPaymentGateway implements PaymentGatewayInterface
         }
 
         $this->charge = $amount;
+
+        return 'ch_' . str_random(24);
     }
 
     public function getTotalCharges()

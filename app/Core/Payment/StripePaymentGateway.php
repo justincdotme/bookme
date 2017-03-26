@@ -33,7 +33,7 @@ class StripePaymentGateway implements PaymentGatewayInterface
     public function charge($amount, $paymentToken)
     {
         try {
-            StripeCharge::create([
+            $charge = StripeCharge::create([
                 'amount' => $amount,
                 'source' => $paymentToken,
                 'currency' => 'usd'
@@ -42,7 +42,8 @@ class StripePaymentGateway implements PaymentGatewayInterface
             throw new PaymentFailedException();
         }
 
-        return $this->charge = $amount;
+        $this->charge = $amount;
+        return $charge->id;
     }
 
     public function getTotalCharges()

@@ -73,4 +73,21 @@ class StripePaymentGatewayTest extends TestCase
             ]
         )['data'][0];
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_charge_id_on_successful_charge()
+    {
+        //Create new stripe payment gateway
+        $paymentGateway = new StripePaymentGateway(config('services.stripe.secret'));
+
+        $charge = $paymentGateway->charge(12500, $paymentGateway->getValidTestToken());
+
+        $this->assertStringStartsWith(
+            'ch_',
+            $charge,
+            'A valid charge ID was not returned'
+        );
+    }
 }

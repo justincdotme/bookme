@@ -36,4 +36,20 @@ class TestPaymentGatewayTest extends TestCase
 
         $this->fail('Charge succeeded with invalid test token.');
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_charge_id_on_successful_charge()
+    {
+        $testPaymentGateway = new TestPaymentGateway();
+
+        $charge = $testPaymentGateway->charge(350000, $testPaymentGateway->getValidTestToken());
+
+        $this->assertStringStartsWith(
+            'ch_',
+            $charge,
+            'A valid charge ID was not returned'
+        );
+    }
 }

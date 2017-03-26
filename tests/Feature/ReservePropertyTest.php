@@ -75,6 +75,42 @@ class ReservePropertyTest extends TestCase
     /**
      * @test
      */
+    public function charge_id_is_saved_on_successful_reservation()
+    {
+        $this->user = factory(User::class)->states(['standard'])->create([
+            'id' => 1,
+            'email' => 'foo@bar.com'
+        ]);
+
+        $this->property = factory(Property::class)->make([
+            'id' => 1,
+            'rate' => 50000
+        ]);
+        $state = factory(State::class)->create([
+            'abbreviation' => 'WA'
+        ]);
+
+        $this->property->state()->associate($state);
+        $this->property->save();
+
+        $this->response = $this->reserveProperty([
+            'date_start' => Carbon::now()->toDateString(),
+            'date_end' => Carbon::parse('+1 week')->toDateString(),
+            'payment_token' => $this->paymentGateway->getValidTestToken()
+        ]);
+
+        $chargeId = $this->property->reservations()->first()->charge_id;
+        $this->assertNotNull($chargeId);
+        $this->assertStringStartsWith(
+            'ch_',
+            $chargeId,
+            'A valid charge ID was not returned'
+        );
+    }
+
+    /**
+     * @test
+     */
     public function unauthenticated_user_cannot_make_reservation()
     {
         $useUnauthenticatedUser = true;
@@ -266,7 +302,7 @@ class ReservePropertyTest extends TestCase
         }
 
         if (!$noAuthenticatedUser) {
-            $this->be($this->user);
+            $this->actingAs($this->user);
         }
 
         return $this->json('POST', "/properties/{$this->property->id}/reservations", $params);
