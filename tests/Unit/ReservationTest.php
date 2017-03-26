@@ -124,4 +124,18 @@ class ReservationTest extends TestCase
             'A valid charge ID was not returned'
         );
     }
+
+    /**
+     * @test
+     */
+    public function it_can_get_formatted_total_amount()
+    {
+        $reservation = factory(Reservation::class)->create([
+            'amount' => 50000
+        ]);
+
+        $amount = $reservation->formatted_amount;
+
+        $this->assertEquals('$500.00', $amount);
+    }
 }

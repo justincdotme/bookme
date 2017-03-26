@@ -94,4 +94,9 @@ class Reservation extends Model
     {
         return $this->date_end->toFormattedDateString();
     }
+
+    public function getFormattedAmountAttribute()
+    {
+        return '$' . number_format(($this->amount / 100), 2);
+    }
 }

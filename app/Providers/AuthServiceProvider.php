@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Core\Reservation;
+use App\Policies\ReservationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -11,7 +13,9 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [];
+    protected $policies = [
+        Reservation::class => ReservationPolicy::class
+    ];
 
     /**
      * Register any authentication / authorization services.

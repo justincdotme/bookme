@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Payment\PaymentFailedException;
 use App\Core\Property\Property;
+use App\Core\Reservation;
 use App\Exceptions\AlreadyReservedException;
 use App\Core\Payment\PaymentGatewayInterface;
 use App\Mail\ReservationComplete;
@@ -19,6 +20,16 @@ class PropertyReservationController extends Controller
         $this->paymentGateway = $paymentGateway;
     }
 
+    public function show($property, $reservation)
+    {
+        $this->authorize('view', $reservation);
+        return view('public.reservations.show', [
+            'property' => $property,
+            'reservation' => $reservation,
+            'user' => null
+        ]);
+    }
+
     /**
      * Create a new property reservation.
      *
@@ -27,37 +38,36 @@ class PropertyReservationController extends Controller
      */
     public function store($property)
     {
-        if ($user = auth()->user()) {
+        $this->authorize('create', Reservation::class);
+        $this->validate(request(), [
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'payment_token' => 'required'
+        ]);
 
-            $this->validate(request(), [
-                'date_start' => 'required|date',
-                'date_end' => 'required|date',
-                'payment_token' => 'required'
-            ]);
+        $user = auth()->user();
+        try {
+            $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
 
-            try {
-                $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
+            $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
 
-                $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
+            Mail::to($user)->send(new ReservationComplete($user, $confirmation, config('mail')));
 
-                Mail::to($user)->send(new ReservationComplete($user, $confirmation, config('mail')));
-
-                return response()->json([
-                    'status' => 'success',
-                    'reservation' => $confirmation
-                ], 201);
-            } catch (PaymentFailedException $e) {
-                $reservation->cancel();
-                return response()->json([
-                    'status' => 'error',
-                    'msg' => 'The payment has failed, please try a different card.'
-                ], 422);
-            } catch (AlreadyReservedException $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'msg' => 'The property is unavailable for this date range.'
-                ], 422);
-            }
+            return response()->json([
+                'status' => 'success',
+                'reservation' => $confirmation
+            ], 201);
+        } catch (PaymentFailedException $e) {
+            $reservation->cancel();
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'The payment has failed, please try a different card.'
+            ], 422);
+        } catch (AlreadyReservedException $e) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'The property is unavailable for this date range.'
+            ], 422);
         }
 
         return response()->json([
