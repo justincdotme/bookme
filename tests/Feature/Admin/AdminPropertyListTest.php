@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Core\Property\Property;
-use App\Core\Property\PropertyImage;
 use App\Core\State;
 use App\Core\User;
 use Tests\TestCase;
