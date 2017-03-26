@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Core\Property\Property;
+use App\Core\Property\PropertyImage;
 use App\Core\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AddPropertyImageTest extends TestCase
+class PropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -93,5 +94,29 @@ class AddPropertyImageTest extends TestCase
         ]);
 
         $response->assertStatus(403);
+    }
+
+    /**
+     * @test
+     */
+    public function property_image_can_be_deleted()
+    {
+        $this->property = factory(Property::class)->create();
+        $this->user = factory(User::class)->states(['admin'])->create();
+        $testThumb = $this->copyTestImages('thumb');
+        $testFull = $this->copyTestImages('full');
+        $this->assertFileExists($testFull);
+        $this->assertFileExists($testThumb);
+        $this->propertyImage = factory(PropertyImage::class)->create([
+            'property_id' => $this->property->id,
+            'thumb_path' => $testThumb,
+            'full_path' => $testFull,
+        ]);
+
+        $response = $this->actingAs($this->user)->delete("/properties/{$this->property->id}/images/{}");
+
+        $response->assertStatus(200);
+        $this->assertFileNotExists($testFull);
+        $this->assertFileNotExists($testThumb);
     }
 }

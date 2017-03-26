@@ -9,6 +9,7 @@ use App\Exceptions\Handler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\File;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -95,5 +96,23 @@ abstract class TestCase extends BaseTestCase
 
         $this->be($this->user);
         return $this->json('PUT', "/properties/{$this->property->id}", $params);
+    }
+
+
+    /**
+     * Utility method to copy test images to public dir
+     *
+     * @return string
+     */
+    protected function copyTestImages($name = null)
+    {
+        $stubPath = __DIR__ . "/stubs/test-1.jpg";
+        $tmpName = (null === $name) ? "{$this->property->id}-original.jpg" : "{$name}.jpg";
+        $tmpDir = storage_path("app/public/images/properties/{$this->property->id}");
+        $tmpPath = "{$tmpDir}/{$tmpName}";
+        File::makeDirectory($tmpDir, 0775, true, true);
+        File::copy($stubPath, $tmpPath);
+
+        return $tmpPath;
     }
 }

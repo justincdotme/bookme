@@ -16,4 +16,6 @@ Route::group(['middleware' => ['admin']], function () {
     Route::put('/properties/{id}', 'PropertyController@update');
 
     Route::post('/properties/{id}/images', 'PropertyImageController@store');
+
+    Route::delete('/properties/{id}/images/{imageId}', 'PropertyImageController@destroy');
 });

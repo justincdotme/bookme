@@ -56,20 +56,4 @@ class PropertyImageTest extends TestCase
         $this->assertFileExists($imageFile);
     }
 
-    /**
-     * Utility method to copy test images to public dir
-     *
-     * @return string
-     */
-    protected function copyTestImages()
-    {
-        $stubPath = dirname(dirname(__DIR__)) . "/stubs/test-1.jpg";
-        $tmpName = "{$this->property->id}-original.jpg";
-        $tmpDir = storage_path("app/public/images/properties/{$this->property->id}");
-        $tmpPath = "{$tmpDir}/{$tmpName}";
-        File::makeDirectory($tmpDir, 0775, true, true);
-        File::copy($stubPath, $tmpPath);
-
-        return $tmpPath;
-    }
 }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Core\Property\Property;
+use App\Core\Property\PropertyImage;
 use App\Events\PropertyImageUploadProcessed;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 
 class PropertyImageController extends Controller
@@ -46,5 +46,19 @@ class PropertyImageController extends Controller
             'full_path' => $propertyImage->full_path,
             'thumb_path' => $propertyImage->thumb_path
         ], 201);
+    }
+
+    public function destroy($imageId)
+    {
+        $image = PropertyImage::find($imageId);
+
+        File::delete($image->full_path);
+        File::delete($image->thumb_path);
+
+        $image->delete();
+
+        return response()->json([
+          'status' => 'success'
+        ]);
     }
 }
