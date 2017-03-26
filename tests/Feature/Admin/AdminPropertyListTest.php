@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Core\Property\Property;
+use App\Core\Property\PropertyImage;
 use App\Core\State;
 use App\Core\User;
 use Tests\TestCase;
@@ -10,16 +11,18 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class ViewAdminPropertyListTest extends TestCase
+class AdminPropertyListTest extends TestCase
 {
     use DatabaseMigrations;
 
     /**
      * @test
      */
-    public function it_returns_paginated_json_response_with_10_properties_for_xhr()
+    public function it_returns_paginated_view_with_10_properties_per_page()
     {
+        $this->disableExceptionHandling();
         $properties = factory(Property::class, 20)->make();
+        $this->user = factory(User::class)->states(['admin'])->create();
         $state = factory(State::class)->create([
             'abbreviation' => 'WA'
         ]);
@@ -27,7 +30,6 @@ class ViewAdminPropertyListTest extends TestCase
             $item->state()->associate($state);
             $item->save();
         });
-        $this->user = factory(User::class)->states(['admin'])->create();
 
         $response = $this->actingAs($this->user)->get('/admin/properties');
 
