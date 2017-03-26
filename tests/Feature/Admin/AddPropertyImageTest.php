@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AdminPropertyImageTest extends TestCase
+class AddPropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -95,29 +95,5 @@ class AdminPropertyImageTest extends TestCase
         ]);
 
         $response->assertStatus(403);
-    }
-
-    /**
-     * @test
-     */
-    public function property_image_can_be_deleted()
-    {
-        $this->property = factory(Property::class)->create();
-        $this->user = factory(User::class)->states(['admin'])->create();
-        $testThumb = $this->copyTestImages('thumb');
-        $testFull = $this->copyTestImages('full');
-        $this->assertFileExists($testFull);
-        $this->assertFileExists($testThumb);
-        $this->propertyImage = factory(PropertyImage::class)->create([
-            'property_id' => $this->property->id,
-            'thumb_path' => $testThumb,
-            'full_path' => $testFull,
-        ]);
-
-        $response = $this->actingAs($this->user)->delete("/admin/properties/{$this->property->id}/images/{$this->propertyImage->id}");
-
-        $response->assertStatus(200);
-        $this->assertFileNotExists($testFull);
-        $this->assertFileNotExists($testThumb);
     }
 }
