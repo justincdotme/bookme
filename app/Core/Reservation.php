@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Core\Property\Property;
+use App\Exceptions\AlreadyReservedException;
 use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
@@ -120,12 +121,36 @@ class Reservation extends Model
     /**
      * @param $status
      * @param $amount
+     * @return $this
      */
-    public function updateReservation($status, $amount)
+    public function updateReservation($status, $amount, $dateStart = null, $dateEnd = null)
     {
+        if ($dateStart != $this->date_start || $dateEnd != $this->date_end) {
+            if (!$this->property->isAvailableBetween($dateStart, $dateEnd, $this->id)) {
+                throw new AlreadyReservedException();
+            }
+        }
+
         $this->update([
-            'status' => $status,
-            'amount' => $amount,
+            'date_start' => (null == $dateStart ? $this->date_start : $dateStart),
+            'date_end' => (null == $dateEnd ? $this->date_end : $dateEnd),
+            'status' => (null == $status ? $this->status : $status),
+            'amount' => (null == $amount ? $this->amount : $amount),
         ]);
+
+        return $this;
+    }
+
+    /**
+     * @param $query
+     * @param $reservationId
+     * @return $this
+     */
+    public function scopeExcluding($query, $reservationId)
+    {
+        if (null != $reservationId) {
+            return $query->where('id', '!=', $reservationId);
+        }
+        return $this;
     }
 }

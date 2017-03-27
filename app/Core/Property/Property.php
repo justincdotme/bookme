@@ -87,12 +87,16 @@ class Property extends Model
      * @param $dateEnd
      * @return mixed
      */
-    public function isAvailableBetween($dateStart, $dateEnd)
+    public function isAvailableBetween($dateStart, $dateEnd, $excluding = null)
     {
-        return $this->reservations()->active()->where(function ($query) use ($dateStart, $dateEnd) {
-            return $query->whereBetween('date_start', [$dateStart, $dateEnd])
-                ->orWhereBetween('date_end', [$dateStart, $dateEnd]);
-        })->get()->isEmpty();
+        return $this->reservations()
+            ->active()
+            ->excluding($excluding)
+            ->where(function ($query) use ($dateStart, $dateEnd) {
+                return $query->whereBetween('date_start', [$dateStart, $dateEnd])
+                    ->orWhereBetween('date_end', [$dateStart, $dateEnd]);
+                })->get()
+            ->isEmpty();
     }
 
     /**
