@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Core\Property\Property;
+use App\Exceptions\AlreadyReservedException;
 use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
@@ -12,6 +13,20 @@ class Reservation extends Model
     protected $dates = ['date_start', 'date_end'];
 
     protected $with = ['property'];
+
+    protected static $rules = [
+        'date_start' => 'required|date',
+        'date_end' => 'required|date'
+    ];
+
+    /**
+     * @return array
+     */
+    public static function getRules()
+    {
+        return self::$rules;
+    }
+
     /**
      * @param $query
      * @return mixed
@@ -95,8 +110,33 @@ class Reservation extends Model
         return $this->date_end->toFormattedDateString();
     }
 
+    /**
+     * @return string
+     */
     public function getFormattedAmountAttribute()
     {
         return '$' . number_format(($this->amount / 100), 2);
+    }
+
+    /**
+     * @param $dateStart
+     * @param $dateEnd
+     * @param $status
+     * @param $amount
+     */
+    public function updateReservation($dateStart, $dateEnd, $status, $amount)
+    {
+        if ($dateStart != $this->date_start || $dateEnd != $this->date_end) {
+            if (!$this->property->isAvailableBetween($dateStart, $dateEnd)) {
+                throw new AlreadyReservedException();
+            }
+        }
+
+        $this->update([
+            'date_start' => $dateStart,
+            'date_end' => $dateEnd,
+            'status' => (null == $status ? $this->status : $status),
+            'amount' => $amount,
+        ]);
     }
 }

@@ -26,4 +26,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::delete('/properties/{property}/images/{image}', 'Admin\PropertyImageController@destroy');
 
     Route::get('/properties/{property}/reservations/{reservation}', 'Admin\ReservationController@show');
+
+    Route::put('/properties/{property}/reservations/{reservation}', 'Admin\ReservationController@update');
 });

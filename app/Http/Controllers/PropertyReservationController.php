@@ -39,18 +39,18 @@ class PropertyReservationController extends Controller
     public function store($property)
     {
         $this->authorize('create', Reservation::class);
-        $this->validate(request(), [
-            'date_start' => 'required|date',
-            'date_end' => 'required|date',
-            'payment_token' => 'required'
-        ]);
-
+        $this->validate(
+            request(),
+            array_merge(
+                Reservation::getRules(),
+                ['payment_token' => 'required']
+            )
+        );
         $user = auth()->user();
+
         try {
             $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
-
             $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
-
             Mail::to($user)->send(new ReservationComplete($user, $confirmation, config('mail')));
 
             return response()->json([
