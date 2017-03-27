@@ -137,36 +137,4 @@ class ReservationTest extends TestCase
 
         $this->assertEquals('$500.00', $amount);
     }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_if_property_is_already_reserved_when_updating_reservation()
-    {
-        $property = factory(Property::class)->states(['available'])->create();
-        $reservation1 = factory(Reservation::class)->create([
-            'property_id' => $property->id,
-            'date_start' => Carbon::now(),
-            'date_end' => Carbon::parse('+1 week')
-        ]);
-        factory(Reservation::class)->create([
-            'property_id' => $property->id,
-            'date_start' => Carbon::parse('+2 weeks'),
-            'date_end' => Carbon::parse('+3 weeks')
-        ]);
-
-        try {
-            $reservation1->updateReservation(
-                Carbon::parse('+2 weeks'),
-                Carbon::parse('+3 weeks'),
-                $reservation1->status,
-                $reservation1->amount
-            );
-            $this->expectException(AlreadyReservedException::class);
-        } catch (AlreadyReservedException $e) {
-            return;
-        }
-
-        $this->fail('Reservation was updated to a date that is already reserved!');
-    }
 }

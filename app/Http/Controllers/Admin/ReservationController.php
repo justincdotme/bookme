@@ -34,12 +34,7 @@ class ReservationController extends Controller
         $this->validate(request(), $reservation->getRules());
 
         try {
-            $reservation->updateReservation(
-                request('date_start'),
-                request('date_end'),
-                request('status'),
-                request('amount')
-            );
+            $reservation->updateReservation(request('status'), request('amount'));
         } catch (AlreadyReservedException $e) {
             return response()->json([
                 'status' => 'error',
