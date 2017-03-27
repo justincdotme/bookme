@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exceptions\AlreadyReservedException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -31,16 +30,7 @@ class ReservationController extends Controller
      */
     public function update($property, $reservation)
     {
-        $this->validate(request(), $reservation->getRules());
-
-        try {
-            $reservation->updateReservation(request('status'), request('amount'));
-        } catch (AlreadyReservedException $e) {
-            return response()->json([
-                'status' => 'error',
-                'msg' => 'The property has already been reserved for these dates.'
-            ], 422);
-        }
+        $reservation->updateReservation(request('status'), request('amount'));
 
         return response()->json([
             'status' => 'success',

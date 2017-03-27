@@ -42,18 +42,6 @@ class ReservationPolicy
      */
     public function update(User $user, Reservation $reservation)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the reservation.
-     *
-     * @param  \App\Core\User  $user
-     * @param  \App\Core\Reservation  $reservation
-     * @return mixed
-     */
-    public function delete(User $user, Reservation $reservation)
-    {
-        //
+        return ($user->id == $reservation->user_id);
     }
 }

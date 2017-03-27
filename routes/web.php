@@ -14,6 +14,8 @@ Route::get('/properties/{property}/images', 'PropertyImageController@index');
 
 Route::get('/properties/{property}/reservations/{reservation}', 'PropertyReservationController@show');
 
+Route::put('/properties/{property}/reservations/{reservation}', 'PropertyReservationController@update');
+
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/properties', 'Admin\PropertyController@index');
 

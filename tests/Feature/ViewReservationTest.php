@@ -64,7 +64,7 @@ class ViewReservationTest extends TestCase
         ]);
 
         $response = $this->actingAs($user2)->get(
-            "/admin/properties/{$property->id}/reservations/{$reservation->id}"
+            "/properties/{$property->id}/reservations/{$reservation->id}"
         );
 
         $response->assertStatus(403);

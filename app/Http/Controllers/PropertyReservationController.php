@@ -15,14 +15,24 @@ class PropertyReservationController extends Controller
 {
     protected $paymentGateway;
 
+    /**
+     * PropertyReservationController constructor.
+     * @param PaymentGatewayInterface $paymentGateway
+     */
     function __construct(PaymentGatewayInterface $paymentGateway)
     {
         $this->paymentGateway = $paymentGateway;
     }
 
+    /**
+     * @param $property
+     * @param $reservation
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show($property, $reservation)
     {
         $this->authorize('view', $reservation);
+
         return view('public.reservations.show', [
             'property' => $property,
             'reservation' => $reservation,
@@ -39,6 +49,7 @@ class PropertyReservationController extends Controller
     public function store($property)
     {
         $this->authorize('create', Reservation::class);
+
         $this->validate(
             request(),
             array_merge(
@@ -73,5 +84,22 @@ class PropertyReservationController extends Controller
         return response()->json([
             'status' => 'error'
         ], 403);
+    }
+
+    /**
+     * @param $property
+     * @param $reservation
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update($property, $reservation)
+    {
+        $this->authorize('update', $reservation);
+
+        $reservation->cancel();
+
+        return response()->json([
+            'status' => 'success',
+            'reservation' => $reservation->fresh()
+        ]);
     }
 }
