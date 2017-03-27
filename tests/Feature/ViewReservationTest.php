@@ -56,14 +56,15 @@ class ViewReservationTest extends TestCase
      */
     public function standard_users_cannot_view_other_users_reservations_()
     {
-        $user1 = factory(User::class)->states(['standard'])->create();
-        $user2 = factory(User::class)->states(['standard'])->create();
+        $user = factory(User::class)->states(['standard'])->create([
+
+        ]);
         $property = factory(Property::class)->create();
         $reservation = factory(Reservation::class)->create([
-            'user_id' => $user1->id
+            'user_id' => 2
         ]);
 
-        $response = $this->actingAs($user2)->get(
+        $response = $this->actingAs($user)->get(
             "/properties/{$property->id}/reservations/{$reservation->id}"
         );
 

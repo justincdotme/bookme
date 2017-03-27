@@ -63,7 +63,6 @@ class AdminEditReservationTest extends TestCase
             ]
         );
 
-
         $response->assertStatus(422);
         $response->assertJsonFragment([
             'status' => 'error',
