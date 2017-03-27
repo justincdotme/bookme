@@ -6,15 +6,15 @@ Route::get('/properties', 'PropertyController@index');
 
 Route::get('/properties/{property}', 'PropertyController@show');
 
-Route::post('/properties/{property}/reservations', 'PropertyReservationController@store');
+Route::post('/properties/{property}/reservations', 'ReservationController@store');
 
 Route::post('/properties/{property}/reservations/check', 'ReservationCheckController@show');
 
 Route::get('/properties/{property}/images', 'PropertyImageController@index');
 
-Route::get('/properties/{property}/reservations/{reservation}', 'PropertyReservationController@show');
+Route::get('/properties/{property}/reservations/{reservation}', 'ReservationController@show');
 
-Route::put('/properties/{property}/reservations/{reservation}', 'PropertyReservationController@update');
+Route::put('/properties/{property}/reservations/{reservation}', 'ReservationController@update');
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/properties', 'Admin\PropertyController@index');

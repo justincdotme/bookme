@@ -7,11 +7,12 @@ use App\Core\Property\Property;
 use App\Core\Reservation;
 use App\Exceptions\AlreadyReservedException;
 use App\Core\Payment\PaymentGatewayInterface;
+use App\Mail\ReservationCancelled;
 use App\Mail\ReservationComplete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
-class PropertyReservationController extends Controller
+class ReservationController extends Controller
 {
     protected $paymentGateway;
 
@@ -57,9 +58,9 @@ class PropertyReservationController extends Controller
                 ['payment_token' => 'required']
             )
         );
-        $user = auth()->user();
 
         try {
+            $user = auth()->user();
             $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
             $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
             Mail::to($user)->send(new ReservationComplete($user, $confirmation, config('mail')));
@@ -80,10 +81,6 @@ class PropertyReservationController extends Controller
                 'msg' => 'The property is unavailable for this date range.'
             ], 422);
         }
-
-        return response()->json([
-            'status' => 'error'
-        ], 403);
     }
 
     /**
@@ -96,6 +93,11 @@ class PropertyReservationController extends Controller
         $this->authorize('update', $reservation);
 
         $reservation->cancel();
+
+        $user = auth()->user();
+
+        Mail::to(config('mail.accounts.admin.to'))
+            ->send(new ReservationCancelled($user, $reservation, config('mail')));
 
         return response()->json([
             'status' => 'success',
