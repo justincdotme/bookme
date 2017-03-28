@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Property\Property;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -21,11 +20,7 @@ class ReservationCheckController extends Controller
             'date_end' => 'required|date'
         ]);
 
-        if ($property->isAvailableBetween(
-                Carbon::parse(request('date_start')),
-                Carbon::parse(request('date_end'))
-            )
-        ) {
+        if ($property->isAvailableBetween(Carbon::parse(request('date_start')), Carbon::parse(request('date_end')))) {
             return response()->json([
                 'status' => 'success',
                 'msg' => 'The property is available for this date range.'
