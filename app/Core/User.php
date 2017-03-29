@@ -14,9 +14,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'first_name', 'last_name', 'email', 'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -26,6 +24,19 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected static $rules = [
+        'email' => 'required',
+        'password' => 'required'
+    ];
+
+    /**
+     * @return array
+     */
+    public static function getRules()
+    {
+        return self::$rules;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -57,5 +68,15 @@ class User extends Authenticatable
     public function getRole()
     {
         return $this->role->name;
+    }
+
+    public static function createStandardUser(array $user)
+    {
+        return self::create([
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
+            'email' => $user['email'],
+            'password' => bcrypt($user['password']),
+        ]);
     }
 }

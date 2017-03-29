@@ -1,6 +1,21 @@
 <?php
 
-Auth::routes();
+Route::get('/register', [
+    'as' => 'register',
+    'uses' => 'UserController@create'
+])->middleware('guest');
+
+Route::post('/register', [
+    'as' => 'register.store',
+    'uses' => 'UserController@store'
+])->middleware('guest');
+
+Route::get('/login', [
+    'as' => 'login',
+    'uses' => 'Auth\LoginController@showLoginForm'
+]);
+
+Route::post('/login', 'UserController@login');
 
 Route::get('/properties', 'PropertyController@index');
 

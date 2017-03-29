@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\User;
 
 use App\Core\Role;
 use App\Core\User;
@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UserTest extends TestCase
 {
+    use DatabaseMigrations;
     /**
      * @test
      */
@@ -52,5 +53,20 @@ class UserTest extends TestCase
 
         $this->assertEquals('standard', $standardUser->getRole());
         $this->assertEquals('admin', $adminUser->getRole());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_create_a_standard_user()
+    {
+        $user = User::createStandardUser([
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test.user@justinc.me',
+            'password' => 'abc123',
+        ]);
+
+        $this->assertEquals(1, $user->fresh()->role_id);
     }
 }
