@@ -63,7 +63,7 @@ class ReservationController extends Controller
             $user = auth()->user();
             $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
             $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
-            Mail::to($user)->send(new ReservationComplete($user, $confirmation, config('mail')));
+            Mail::send(new ReservationComplete($user, $confirmation, config('mail')));
 
             return response()->json([
                 'status' => 'success',
@@ -96,8 +96,7 @@ class ReservationController extends Controller
 
         $user = auth()->user();
 
-        Mail::to(config('mail.accounts.admin.to'))
-            ->send(new ReservationCancelled($user, $reservation, config('mail')));
+        Mail::send(new ReservationCancelled($user, $reservation, config('mail')));
 
         return response()->json([
             'status' => 'success',

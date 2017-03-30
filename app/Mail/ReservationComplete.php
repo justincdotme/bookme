@@ -36,7 +36,8 @@ class ReservationComplete extends Mailable
      */
     public function build()
     {
-        return $this->from([
+        return $this->to($this->user)
+            ->from([
                 'address' => $this->config['from']['address'],
                 'name' => $this->config['from']['name']
             ])

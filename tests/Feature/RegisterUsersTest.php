@@ -69,7 +69,6 @@ class RegisterUsersTest extends TestCase
      */
     public function guest_users_can_create_registered_users()
     {
-        $this->disableExceptionHandling();
         $response = $this->registerUser([
             'first_name' => 'Test',
             'last_name' => 'User',
