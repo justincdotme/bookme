@@ -9,11 +9,17 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         return view('auth.register');
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store()
     {
         $this->validate(request(), array_merge(
@@ -30,7 +36,7 @@ class UserController extends Controller
             'password' => request('password')
         ]);
 
-        Mail::to($user)->send(new UserRegistration($user, config('mail')));
+        Mail::send(new UserRegistration($user, config('mail')));
 
         return redirect()->route('login');
     }

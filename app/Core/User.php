@@ -27,7 +27,7 @@ class User extends Authenticatable
 
     protected static $rules = [
         'email' => 'required',
-        'password' => 'required'
+        'password' => 'required|confirmed'
     ];
 
     /**

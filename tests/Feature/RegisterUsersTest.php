@@ -69,11 +69,13 @@ class RegisterUsersTest extends TestCase
      */
     public function guest_users_can_create_registered_users()
     {
+        $this->disableExceptionHandling();
         $response = $this->registerUser([
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test.user@justinc.me',
             'password' => 'abc123',
+            'password_confirmation' => 'abc123'
         ]);
 
         $response->assertStatus(302);
@@ -139,13 +141,29 @@ class RegisterUsersTest extends TestCase
     /**
      * @test
      */
+    public function password_confirmation_is_required_to_register_standard_user()
+    {
+        $this->response = $this->post('/register', [
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test.user@justinc.me',
+            'password' => 'abc123'
+        ]);
+
+        $this->assertFieldHasValidationError('password');
+    }
+
+    /**
+     * @test
+     */
     public function it_sends_welcome_email_to_new_users()
     {
-        $response = $this->registerUser([
+        $this->registerUser([
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test.user@justinc.me',
             'password' => 'abc123',
+            'password_confirmation' => 'abc123'
         ]);
 
         $this->seeEmailWasSent();
@@ -155,6 +173,12 @@ class RegisterUsersTest extends TestCase
         $this->seeEmailContains("Welcome, Test User");
     }
 
+    /**
+     * Helper method to register a new user.
+     *
+     * @param $params
+     * @return \Illuminate\Foundation\Testing\TestResponse
+     */
     protected function registerUser($params)
     {
         return $this->post('/register', $params);
