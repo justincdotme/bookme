@@ -69,4 +69,17 @@ class UserTest extends TestCase
 
         $this->assertEquals(1, $user->fresh()->role_id);
     }
+
+    /**
+     * @test
+     */
+    public function it_can_return_its_role_by_name()
+    {
+        factory(Role::class)->states(['standard'])->create();
+        $user = factory(User::class)->create([
+            'role_id'=> 1
+        ]);
+
+        $this->assertEquals('standard', $user->getRole());
+    }
 }
