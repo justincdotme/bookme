@@ -2,28 +2,56 @@
 
 namespace App\Core\Payment;
 
+use Carbon\Carbon;
+
 class TestPaymentGateway implements PaymentGatewayInterface
 {
-    protected $charge;
+    protected $charges;
 
+    function __construct()
+    {
+        $this->charges = collect([]);
+    }
+
+    /**
+     * @return string
+     */
     public function getValidTestToken()
     {
         return 'valid-token';
     }
 
+    /**
+     * @param $amount
+     * @param $paymentToken
+     * @return Charge
+     */
     public function charge($amount, $paymentToken)
     {
         if ($paymentToken !== $this->getValidTestToken()) {
             throw new PaymentFailedException();
         }
 
-        $this->charge = $amount;
+        $charge = new Charge([
+            'id' => 'ch_' . str_random(24),
+            'amount' => $amount,
+            'exp_month' => Carbon::parse('+2 months')->format('n'),
+            'exp_year' => Carbon::parse('+2 years')->format('Y'),
+            'last_four' => 4242,
+            'brand' => 'Visa'
+        ]);
+        $this->charges->push($charge);
 
-        return 'ch_' . str_random(24);
+        return $charge;
     }
 
+    /**
+     * @return int
+     */
     public function getTotalCharges()
     {
-        return $this->charge;
+        return $this->charges->reduce(function ($carry, $item) {
+            return ($carry + $item->getAmount());
+        });
     }
 }

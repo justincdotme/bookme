@@ -10,14 +10,19 @@ class StripePaymentGateway implements PaymentGatewayInterface
 {
     const TEST_CARD_NUMBER = '4242424242424242';
 
-    protected $charge;
+    protected $charges;
     protected $apiKey;
 
     function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
+        $this->charges = collect([]);
     }
 
+    /**
+     * @param string $cardNumber
+     * @return string
+     */
     public function getValidTestToken($cardNumber = self::TEST_CARD_NUMBER)
     {
         return StripeToken::create([
@@ -30,10 +35,15 @@ class StripePaymentGateway implements PaymentGatewayInterface
         ], ['api_key' => $this->apiKey])->id;
     }
 
+    /**
+     * @param $amount
+     * @param $paymentToken
+     * @return Charge
+     */
     public function charge($amount, $paymentToken)
     {
         try {
-            $charge = StripeCharge::create([
+            $stripeCharge = StripeCharge::create([
                 'amount' => $amount,
                 'source' => $paymentToken,
                 'currency' => 'usd'
@@ -41,13 +51,26 @@ class StripePaymentGateway implements PaymentGatewayInterface
         } catch (InvalidRequest $e) {
             throw new PaymentFailedException();
         }
+        $charge = new Charge([
+            'id' => $stripeCharge->id,
+            'amount' => $stripeCharge->amount,
+            'exp_month' => $stripeCharge->source->exp_month,
+            'exp_year' => $stripeCharge->source->exp_year,
+            'last_four' => $stripeCharge->source->last4,
+            'brand' => $stripeCharge->source->brand
+        ]);
+        $this->charges->push($charge);
 
-        $this->charge = $amount;
-        return $charge->id;
+        return $charge;
     }
 
+    /**
+     * @return int
+     */
     public function getTotalCharges()
     {
-        return $this->charge;
+        return $this->charges->reduce(function ($carry, $item) {
+            return ($carry + $item->getAmount());
+        });
     }
 }

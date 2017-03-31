@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Payment;
 
+use App\Core\Payment\Charge;
 use App\Core\Payment\PaymentFailedException;
 use App\Core\Payment\TestPaymentGateway;
 use Tests\TestCase;
@@ -17,9 +18,9 @@ class TestPaymentGatewayTest extends TestCase
     {
         $testPaymentGateway = new TestPaymentGateway();
 
-        $testPaymentGateway->charge(350000, $testPaymentGateway->getValidTestToken());
+        $charge = $testPaymentGateway->charge(350000, $testPaymentGateway->getValidTestToken());
 
-        $this->assertEquals(350000, $testPaymentGateway->getTotalCharges());
+        $this->assertEquals(350000, $charge->getAmount());
     }
 
     /**
@@ -40,16 +41,12 @@ class TestPaymentGatewayTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_charge_id_on_successful_charge()
+    public function it_returns_charge_object_on_successful_charge()
     {
         $testPaymentGateway = new TestPaymentGateway();
 
         $charge = $testPaymentGateway->charge(350000, $testPaymentGateway->getValidTestToken());
 
-        $this->assertStringStartsWith(
-            'ch_',
-            $charge,
-            'A valid charge ID was not returned'
-        );
+        $this->assertInstanceOf(Charge::class, $charge);
     }
 }

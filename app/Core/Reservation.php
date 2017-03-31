@@ -67,11 +67,11 @@ class Reservation extends Model
      */
     public function complete($paymentGateway, $token)
     {
-        $chargeId = $paymentGateway->charge($this->calculateTotal(), $token);
+        $charge = $paymentGateway->charge($this->calculateTotal(), $token);
         $this->update([
             'status' => 'paid',
             'amount' => $paymentGateway->getTotalCharges(),
-            'charge_id' => $chargeId
+            'charge_id' => $charge->getId()
         ]);
         return $this;
     }
