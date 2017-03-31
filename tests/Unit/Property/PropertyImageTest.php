@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+/**
+ * @group filesystem
+ */
+
 class PropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
@@ -55,5 +59,4 @@ class PropertyImageTest extends TestCase
 
         $this->assertFileExists($imageFile);
     }
-
 }

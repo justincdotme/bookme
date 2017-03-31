@@ -49,7 +49,7 @@ class ViewPropertyTest extends TestCase
      */
     public function property_images_are_included_in_html_on_initial_load_if_property_has_images()
     {
-        $this->makeTestProperty()->addImages(5);
+        $this->makeTestProperty()->addImages(1);
 
         $response = $this->get('/properties/' . $this->property->id);
 
@@ -96,6 +96,10 @@ class ViewPropertyTest extends TestCase
         return $this;
     }
 
+    /**
+     * @param $count
+     * @return $this
+     */
     protected function addImages($count)
     {
         if ($count) {

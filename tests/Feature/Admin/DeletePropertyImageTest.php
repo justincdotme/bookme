@@ -11,9 +11,24 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+/**
+ * @group filesystem
+ */
+
 class DeletePropertyImageTest extends TestCase
 {
     use DatabaseMigrations;
+
+    protected $testThumb;
+    protected $testFull;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->property = factory(Property::class)->create();
+        $this->testThumb = $this->copyTestImages('thumb');
+        $this->testFull = $this->copyTestImages('full');
+    }
 
     public function tearDown()
     {
@@ -24,48 +39,39 @@ class DeletePropertyImageTest extends TestCase
     /**
      * @test
      */
-    public function admin_users_can_delete_property_images()
-    {
-        $this->property = factory(Property::class)->create();
-        $this->user = factory(User::class)->states(['admin'])->create();
-        $testThumb = $this->copyTestImages('thumb');
-        $testFull = $this->copyTestImages('full');
-        $this->assertFileExists($testFull);
-        $this->assertFileExists($testThumb);
-        $this->propertyImage = factory(PropertyImage::class)->create([
-            'property_id' => $this->property->id,
-            'thumb_path' => $testThumb,
-            'full_path' => $testFull,
-        ]);
-
-        $response = $this->actingAs($this->user)->delete("/admin/properties/{$this->property->id}/images/{$this->propertyImage->id}");
-
-        $response->assertStatus(200);
-        $this->assertFileNotExists($testFull);
-        $this->assertFileNotExists($testThumb);
-    }
-
-    /**
-     * @test
-     */
     public function non_admin_users_cannot_delete_property_images()
     {
-        $this->property = factory(Property::class)->create();
         $this->user = factory(User::class)->states(['standard'])->create();
-        $testThumb = $this->copyTestImages('thumb');
-        $testFull = $this->copyTestImages('full');
-        $this->assertFileExists($testFull);
-        $this->assertFileExists($testThumb);
         $this->propertyImage = factory(PropertyImage::class)->create([
             'property_id' => $this->property->id,
-            'thumb_path' => $testThumb,
-            'full_path' => $testFull,
+            'thumb_path' => $this->testThumb,
+            'full_path' => $this->testFull,
         ]);
 
         $response = $this->actingAs($this->user)->delete("/admin/properties/{$this->property->id}/images/{$this->propertyImage->id}");
 
         $response->assertStatus(403);
-        $this->assertFileExists($testFull);
-        $this->assertFileExists($testThumb);
+        $this->assertFileExists($this->testThumb);
+        $this->assertFileExists($this->testFull);
+    }
+
+    /**
+     * @test
+     */
+    public function admin_users_can_delete_property_images()
+    {
+        $this->user = factory(User::class)->states(['admin'])->create();
+        $this->propertyImage = factory(PropertyImage::class)->create([
+            'property_id' => $this->property->id,
+            'thumb_path' => $this->testThumb,
+            'full_path' => $this->testFull,
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->delete("/admin/properties/{$this->property->id}/images/{$this->propertyImage->id}");
+
+        $response->assertStatus(200);
+        $this->assertFileNotExists($this->testThumb);
+        $this->assertFileNotExists($this->testFull);
     }
 }
