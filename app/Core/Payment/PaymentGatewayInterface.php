@@ -15,4 +15,10 @@ interface PaymentGatewayInterface {
      * @return mixed
      */
     public function getValidTestToken();
+
+    /**
+     * @param $chargeId
+     * @return mixed
+     */
+    public function getChargeById($chargeId);
 }
