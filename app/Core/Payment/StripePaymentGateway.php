@@ -73,4 +73,23 @@ class StripePaymentGateway implements PaymentGatewayInterface
             return ($carry + $item->getAmount());
         });
     }
+
+
+    /**
+     * @param $chargeId
+     * @return static
+     */
+    public function getChargeById($chargeId)
+    {
+        $stripeCharge = StripeCharge::retrieve($chargeId , ['api_key' => $this->apiKey]);
+
+        return new Charge([
+            'id' => $stripeCharge->id,
+            'amount' => $stripeCharge->amount,
+            'exp_month' => $stripeCharge->source->exp_month,
+            'exp_year' => $stripeCharge->source->exp_year,
+            'last_four' => $stripeCharge->source->last4,
+            'brand' => $stripeCharge->source->brand
+        ]);
+    }
 }

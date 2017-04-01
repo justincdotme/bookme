@@ -54,4 +54,17 @@ class TestPaymentGateway implements PaymentGatewayInterface
             return ($carry + $item->getAmount());
         });
     }
+
+    /**
+     * @param $chargeId
+     * @return static
+     */
+    public function getChargeById($chargeId)
+    {
+        $charge = $this->charges->reject(function ($value, $key) use ($chargeId) {
+            return $value->getId() != $chargeId;
+        })->first();
+
+        return $charge;
+    }
 }

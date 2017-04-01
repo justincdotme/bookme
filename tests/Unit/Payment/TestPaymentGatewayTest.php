@@ -49,4 +49,22 @@ class TestPaymentGatewayTest extends TestCase
 
         $this->assertInstanceOf(Charge::class, $charge);
     }
+
+    /**
+     * @test
+     */
+    public function it_can_fetch_charge_based_on_charge_id()
+    {
+        $testPaymentGateway = new TestPaymentGateway();
+        $charge1 = $testPaymentGateway->charge(4321, $testPaymentGateway->getValidTestToken());
+        $charge2 = $testPaymentGateway->charge(1234, $testPaymentGateway->getValidTestToken());
+
+        $fetchedCharge = $testPaymentGateway->getChargeById($charge1->getId());
+
+        $this->assertInstanceOf(Charge::class, $fetchedCharge);
+        $this->assertEquals($charge1->getId(), $fetchedCharge->getId());
+        $this->assertEquals($charge1->getAmount(), $fetchedCharge->getAmount());
+        $this->assertNotEquals($charge2->getId(), $fetchedCharge->getId());
+        $this->assertNotEquals($charge2->getAmount(), $fetchedCharge->getAmount());
+    }
 }

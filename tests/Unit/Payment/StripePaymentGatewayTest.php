@@ -28,7 +28,6 @@ class StripePaymentGatewayTest extends TestCase
      */
     public function it_successfully_charges_when_passed_valid_token()
     {
-        //Create new stripe payment gateway
         $paymentGateway = new StripePaymentGateway(config('services.stripe.secret'));
 
         $paymentGateway->charge(12500, $paymentGateway->getValidTestToken());
@@ -80,11 +79,28 @@ class StripePaymentGatewayTest extends TestCase
      */
     public function it_returns_charge_object_on_successful_charge()
     {
-        //Create new stripe payment gateway
         $paymentGateway = new StripePaymentGateway(config('services.stripe.secret'));
 
         $charge = $paymentGateway->charge(12500, $paymentGateway->getValidTestToken());
 
         $this->assertInstanceOf(Charge::class, $charge);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_fetch_charge_based_on_charge_id()
+    {
+        $paymentGateway = new StripePaymentGateway(config('services.stripe.secret'));
+        $charge1 = $paymentGateway->charge(4321, $paymentGateway->getValidTestToken());
+        $charge2 = $paymentGateway->charge(1234, $paymentGateway->getValidTestToken());
+
+        $fetchedCharge = $paymentGateway->getChargeById($charge1->getId());
+
+        $this->assertInstanceOf(Charge::class, $fetchedCharge);
+        $this->assertEquals($charge1->getId(), $fetchedCharge->getId());
+        $this->assertEquals($charge1->getAmount(), $fetchedCharge->getAmount());
+        $this->assertNotEquals($charge2->getId(), $fetchedCharge->getId());
+        $this->assertNotEquals($charge2->getAmount(), $fetchedCharge->getAmount());
     }
 }

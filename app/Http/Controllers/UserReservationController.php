@@ -2,10 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Core\Payment\PaymentGatewayInterface;
 use Illuminate\Http\Request;
 
 class UserReservationController extends Controller
 {
+    protected $paymentGateway;
+
+    /**
+     * PropertyReservationController constructor.
+     * @param PaymentGatewayInterface $paymentGateway
+     */
+    function __construct(PaymentGatewayInterface $paymentGateway)
+    {
+        $this->paymentGateway = $paymentGateway;
+    }
+
     /**
      * @param $user
      * @return \Illuminate\Http\JsonResponse
@@ -33,7 +45,8 @@ class UserReservationController extends Controller
         return view('public.reservations.show', [
             'property' => $reservation->property,
             'reservation' => $reservation,
-            'user' => null
+            'user' => $reservation->user,
+            'charge' => $this->paymentGateway->getChargeById($reservation->charge_id)
         ]);
     }
 }
