@@ -25,7 +25,7 @@ Route::get('/properties/{property}/images', 'PropertyImageController@index');
 
 Route::post('/properties/{property}/reservations', 'ReservationController@store');
 
-Route::get('/properties/{property}/reservations/{reservation}', 'ReservationController@show');
+Route::get('/users/{user}/reservations/{reservation}', 'UserReservationController@show');
 
 Route::put('/properties/{property}/reservations/{reservation}', 'ReservationController@update');
 

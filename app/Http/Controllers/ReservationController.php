@@ -26,22 +26,6 @@ class ReservationController extends Controller
     }
 
     /**
-     * @param $property
-     * @param $reservation
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function show($property, $reservation)
-    {
-        $this->authorize('view', $reservation);
-
-        return view('public.reservations.show', [
-            'property' => $property,
-            'reservation' => $reservation,
-            'user' => null
-        ]);
-    }
-
-    /**
      * Create a new property reservation.
      *
      * @param Property $property

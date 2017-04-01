@@ -20,12 +20,14 @@ class ViewReservationTest extends TestCase
      */
     public function authenticated_users_can_view_their_own_reservation()
     {
+        $this->disableExceptionHandling();
         $user = factory(User::class)->states(['standard'])->create();
         $state = factory(State::class)->create([
             'abbreviation' => 'WA'
         ]);
         $property = factory(Property::class)->create([
-            'state_id' => $state->id
+            'state_id' => $state->id,
+            'name' => 'foobar'
         ]);
         $reservation = factory(Reservation::class)->create([
             'property_id' => $property->id,
@@ -36,7 +38,7 @@ class ViewReservationTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(
-            "/properties/{$property->id}/reservations/{$reservation->id}"
+            "/users/{$user->id}/reservations/{$reservation->id}"
         );
 
         $response->assertStatus(200);
@@ -46,8 +48,6 @@ class ViewReservationTest extends TestCase
         $response->assertSee("{$reservation->formatted_date_start}");
         $response->assertSee("{$reservation->formatted_date_end}");
         $response->assertSee("Cancel Reservation");
-        $response->assertViewHas('property');
-        $response->assertSee($property->name);
         $response->assertViewHas('user');
     }
 
@@ -65,22 +65,7 @@ class ViewReservationTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(
-            "/properties/{$property->id}/reservations/{$reservation->id}"
-        );
-
-        $response->assertStatus(403);
-    }
-
-    /**
-     * @test
-     */
-    public function unauthenticated_users_cannot_view_reservations()
-    {
-        $property = factory(Property::class)->create();
-        $reservation = factory(Reservation::class)->create();
-
-        $response = $this->get(
-            "/admin/properties/{$property->id}/reservations/{$reservation->id}"
+            "/users/{$user->id}/reservations/{$reservation->id}"
         );
 
         $response->assertStatus(403);
