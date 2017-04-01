@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Core\Property\Property;
-use App\Core\Property\PropertyImage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -11,6 +10,13 @@ use Intervention\Image\ImageManager;
 
 class PropertyImageController extends Controller
 {
+    protected $imageManager;
+
+    function __construct(ImageManager $imageManager)
+    {
+        $this->imageManager = $imageManager;
+    }
+
     /**
      * @param Property $property
      * @return \Illuminate\Http\JsonResponse
@@ -31,11 +37,9 @@ class PropertyImageController extends Controller
             'y'
         ]);
 
-        $propertyImage = $property->makeImage();
-
-        $propertyImage->setImageManager(
-            app()->make(ImageManager::class)
-        )->processUpload($image, $imageData);
+        $propertyImage = $property->makeImage()
+            ->setImageManager($this->imageManager)
+            ->processUpload($image, $imageData);
 
         File::delete($image->getRealPath());
 
