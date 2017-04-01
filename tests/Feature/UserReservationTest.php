@@ -46,13 +46,17 @@ class UserReservationTest extends TestCase
     /**
      * @test
      */
-    public function authenticated_users_can_view_another_users_reservation_list()
+    public function authenticated_users_cannot_view_another_users_reservation_list()
     {
-        $user1 = factory(User::class)->states(['standard'])->create();
-        $user2 = factory(User::class)->states(['standard'])->create();
+        $user1 = factory(User::class)->states(['standard'])->create([
+            'id' => 1
+        ]);
+        $user2 = factory(User::class)->states(['standard'])->create([
+            'id' => 2
+        ]);
 
         factory(Property::class)->create();
-        factory(Reservation::class, 2)->create();
+        factory(Reservation::class)->create();
 
         $response = $this->actingAs($user2)->get(
             "/users/{$user1->id}/reservations"
