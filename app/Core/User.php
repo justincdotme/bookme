@@ -84,6 +84,7 @@ class User extends Authenticatable implements CanResetPassword
             'last_name' => $user['last_name'],
             'email' => $user['email'],
             'password' => bcrypt($user['password']),
+            'role_id' => 1
         ]);
     }
 
