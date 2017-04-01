@@ -82,7 +82,7 @@ class ReservePropertyTest extends TestCase
             'payment_token' => $this->paymentGateway->getValidTestToken()
         ], $useUnauthenticatedUser);
 
-        $this->response->assertStatus(403);
+        $this->response->assertStatus(401);
         $this->assertCount(0, $this->property->reservations()->get());
         $this->assertEquals(0, $this->paymentGateway->getTotalCharges());
     }

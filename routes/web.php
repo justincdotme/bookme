@@ -1,20 +1,5 @@
 <?php
 
-Route::get('/register', [
-    'uses' => 'UserController@create'
-])->name('register')->middleware('guest');
-
-Route::post('/register', [
-    'uses' => 'UserController@store'
-])->name('register.store')->middleware('guest');
-
-Route::get('/login', [
-    'as' => 'login',
-    'uses' => 'Auth\LoginController@showLoginForm'
-]);
-
-Route::post('/login', 'UserController@login');
-
 Route::get('/properties', 'PropertyController@index');
 
 Route::get('/properties/{property}', 'PropertyController@show');
@@ -23,13 +8,25 @@ Route::post('/properties/{property}/reservations/check', 'ReservationCheckContro
 
 Route::get('/properties/{property}/images', 'PropertyImageController@index');
 
-Route::post('/properties/{property}/reservations', 'ReservationController@store');
+Route::group(['middleware' => ['guest']], function () {
+    Route::get('/register', 'UserController@create')->name('register');
 
-Route::get('/users/{user}/reservations/{reservation}', 'UserReservationController@show');
+    Route::post('/register', 'UserController@store')->name('register.store');
 
-Route::put('/properties/{property}/reservations/{reservation}', 'ReservationController@update');
+    Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 
-Route::get('/users/{user}/reservations', 'UserReservationController@index');
+    Route::post('/login', 'UserController@login')->name('login.post');
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('/properties/{property}/reservations', 'ReservationController@store');
+
+    Route::get('/users/{user}/reservations/{reservation}', 'UserReservationController@show');
+
+    Route::put('/properties/{property}/reservations/{reservation}', 'ReservationController@update');
+
+    Route::get('/users/{user}/reservations', 'UserReservationController@index');
+});
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/properties', 'Admin\PropertyController@index');
