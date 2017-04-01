@@ -70,6 +70,10 @@ class User extends Authenticatable
         return $this->role->name;
     }
 
+    /**
+     * @param array $user
+     * @return mixed
+     */
     public static function createStandardUser(array $user)
     {
         return self::create([
@@ -78,5 +82,13 @@ class User extends Authenticatable
             'email' => $user['email'],
             'password' => bcrypt($user['password']),
         ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

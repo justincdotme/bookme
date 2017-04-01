@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Core\Property\Property;
 use App\Core\Property\PropertyImage;
 use App\Core\Reservation;
+use App\Core\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -33,6 +34,8 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('image', PropertyImage::class);
 
         Route::model('reservation', Reservation::class);
+
+        Route::model('user', User::class);
     }
 
     /**
