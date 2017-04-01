@@ -16,7 +16,7 @@ class Charge
      * Charge constructor.
      * @param $charge
      */
-    function __construct($charge)
+    function __construct(array $charge)
     {
         $this->charge = $charge;
         $this->id = $charge['id'];
