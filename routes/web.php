@@ -2,6 +2,8 @@
 
 Route::get('/', 'HomeController@index');
 
+Route::get('/properties', 'PropertyController@index');
+
 Route::get('/properties/search', 'PropertySearchController@index');
 
 Route::post('/properties/search', 'PropertySearchController@search');
