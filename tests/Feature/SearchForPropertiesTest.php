@@ -35,7 +35,10 @@ class SearchForPropertiesTest extends TestCase
         ]);
 
 
-        $response = $this->get("/properties/search?city=vancouver&state={$washington->id}");
+        $response = $this->post("/properties/search", [
+            'city' => 'vancouver',
+            'state' => $washington->id
+        ]);
 
         $response = $response->assertStatus(200)->assertJsonFragment([
            'status' => 'success'
@@ -48,21 +51,19 @@ class SearchForPropertiesTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_paginated_view_with_10_properties_per_page()
+    public function it_returns_view_with_all_properties_when_no_query_is_supplied()
     {
         factory(State::class)->create([
             'id' => 1,
             'abbreviation' => 'WA'
         ]);
-        factory(Property::class, 11)->create([
+        factory(Property::class)->create([
             'state_id' => 1
         ]);
 
         $response = $this->get('/properties');
 
         $response->assertStatus(200);
-        $response = $response->decodeResponseJson();
-        $this->assertEquals(2, $response['properties']['last_page']);
-        $this->assertEquals(11, $response['properties']['total'], 11);
+        $response->assertViewHas('properties');
     }
 }
