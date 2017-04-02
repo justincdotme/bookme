@@ -47,6 +47,8 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
+    Route::get('/', 'Admin\HomeController@index');
+
     Route::post('/users', 'Admin\UserController@store');
 
     Route::get('/properties', 'Admin\PropertyController@index');
