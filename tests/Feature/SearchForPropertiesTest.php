@@ -37,34 +37,12 @@ class SearchForPropertiesTest extends TestCase
 
         $response = $this->get("/properties/search?city=vancouver&state={$washington->id}");
 
-        $response->assertStatus(200);
-        $response->assertJsonFragment([
+        $response = $response->assertStatus(200)->assertJsonFragment([
            'status' => 'success'
-        ]);
-        $response = $response->decodeResponseJson();
-        $this->assertContains('vancouver', strtolower($response['properties']['data'][0]['city']));
-        $this->assertContains("{$washington->id}", $response['properties']['data'][0]['state_id']);
-        $this->assertArrayNotHasKey(1, $response['properties']['data']);
-    }
-
-    /**
-     * @test
-     */
-    public function city_is_required_for_property_search()
-    {
-        $this->response = $this->get("/properties/search?state=1");
-
-        $this->assertFieldHasValidationError('city');
-    }
-
-    /**
-     * @test
-     */
-    public function state_is_required_for_property_search()
-    {
-        $this->response = $this->get("/properties/search?city=vancouver");
-
-        $this->assertFieldHasValidationError('state');
+        ])->decodeResponseJson()['properties']['data'];
+        $this->assertContains('vancouver', strtolower($response[0]['city']));
+        $this->assertContains("{$washington->id}", $response[0]['state_id']);
+        $this->assertArrayNotHasKey(1, $response);
     }
 
     /**

@@ -127,9 +127,16 @@ class Property extends Model
      */
     public static function searchCityState($city, $stateId)
     {
-        return self::where([
-            ['city', '=', strtolower($city)],
-            ['state_id', '=', $stateId]
-        ]);
+        $queryParams = [];
+        if ($city && $stateId) {
+            $queryParams[] = ['city', '=', strtolower($city)];
+            $queryParams[] = ['state_id', '=', $stateId];
+        } else if ($city) {
+            $queryParams[] = ['city', '=', strtolower($city)];
+        } else if ($stateId) {
+            $queryParams[] = ['state_id', '=', $stateId];
+        }
+
+        return self::where($queryParams);
     }
 }

@@ -12,11 +12,6 @@ class PropertySearchController extends Controller
      */
     public function search()
     {
-        $this->validate(request(), [
-            'city' => 'required_with:state',
-            'state' => 'required_with:city'
-        ]);
-
         $properties =  Property::searchCityState(
             request('city'),
             request('state')
