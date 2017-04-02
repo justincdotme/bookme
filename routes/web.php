@@ -10,6 +10,10 @@ Route::post('/properties/{property}/reservations/check', 'ReservationCheckContro
 
 Route::get('/properties/{property}/images', 'PropertyImageController@index');
 
+Route::get('/contact', 'ContactFormController@showForm');
+
+Route::post('/contact', 'ContactFormController@contact');
+
 Route::group(['middleware' => ['guest']], function () {
     Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 
