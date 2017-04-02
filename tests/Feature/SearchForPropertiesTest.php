@@ -61,7 +61,7 @@ class SearchForPropertiesTest extends TestCase
             'state_id' => 1
         ]);
 
-        $response = $this->get('/properties');
+        $response = $this->get('/properties/search');
 
         $response->assertStatus(200);
         $response->assertViewHas('properties');
