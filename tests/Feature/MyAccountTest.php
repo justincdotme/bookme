@@ -24,8 +24,8 @@ class MyAccountTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewHas('user');
-        $response->assertSee($this->user->first_name);
-        $response->assertSee($this->user->last_name);
+        $response->assertSee(e($this->user->first_name));
+        $response->assertSee(e($this->user->last_name));
         $response->assertSee($this->user->email);
     }
 

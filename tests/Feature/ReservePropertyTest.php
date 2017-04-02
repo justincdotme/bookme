@@ -102,20 +102,21 @@ class ReservePropertyTest extends TestCase
         ]);
         $this->property->state()->associate($state);
         $this->property->save();
-
         $dateStart = Carbon::now();
         $dateEnd = Carbon::parse('+1 week');
+
         $this->response = $this->reserveProperty([
             'date_start' => $dateStart->toDateString(),
             'date_end' => $dateEnd->toDateString(),
             'payment_token' => $this->paymentGateway->getValidTestToken()
         ]);
 
+        $userName = e($this->user->name);
         $this->seeEmailWasSent();
         $this->seeEmailsSent(1);
         $this->seeEmailTo($this->user->email);
         $this->seeEmailFrom('no-reply@bookme.justinc.me');
-        $this->seeEmailContains("Thank you for your reservation, {$this->user->name}");
+        $this->seeEmailContains("Thank you for your reservation, {$userName}");
         $this->seeEmailContains("Check In: {$dateStart->toFormattedDateString()}");
         $this->seeEmailContains("Check Out: {$dateEnd->toFormattedDateString()}");
         $this->seeEmailContains("Length of Stay: 7 days.");
