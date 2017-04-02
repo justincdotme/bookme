@@ -1,5 +1,7 @@
 <?php
 
+Route::get('/', 'HomeController@index');
+
 Route::get('/properties', 'PropertyController@index');
 
 Route::get('/properties/search', 'PropertySearchController@search');
