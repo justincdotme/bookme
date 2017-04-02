@@ -119,4 +119,17 @@ class Property extends Model
 
         throw new AlreadyReservedException();
     }
+
+    /**
+     * @param $city
+     * @param $stateId
+     * @return mixed
+     */
+    public static function searchCityState($city, $stateId)
+    {
+        return self::where([
+            ['city', '=', strtolower($city)],
+            ['state_id', '=', $stateId]
+        ]);
+    }
 }

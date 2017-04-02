@@ -26,6 +26,7 @@ class CreatePropertiesTable extends Migration
             $table->integer('state_id')->unsigned()->index();
             $table->foreign('state_id')->references('id')->on('states');
             $table->string('zip');
+            $table->index(['city', 'state_id'], 'property_city_state');
             $table->timestamps();
         });
     }

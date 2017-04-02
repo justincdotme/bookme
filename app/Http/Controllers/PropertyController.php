@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return view('public.properties.index', [
+        return response()->json([
+            'status' => 'success',
             'properties' => Property::paginate(10)
         ]);
     }

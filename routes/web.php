@@ -2,6 +2,8 @@
 
 Route::get('/properties', 'PropertyController@index');
 
+Route::get('/properties/search', 'PropertySearchController@search');
+
 Route::get('/properties/{property}', 'PropertyController@show');
 
 Route::post('/properties/{property}/reservations/check', 'ReservationCheckController@show');
