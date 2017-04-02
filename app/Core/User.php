@@ -20,6 +20,11 @@ class User extends Authenticatable implements CanResetPassword
     protected $guarded = [];
 
     /**
+     * @var array
+     */
+    protected $with = ['phones'];
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -28,6 +33,9 @@ class User extends Authenticatable implements CanResetPassword
         'password', 'remember_token',
     ];
 
+    /**
+     * @var array
+     */
     protected static $rules = [
         'email' => 'required',
         'password' => 'required|confirmed'
@@ -47,6 +55,14 @@ class User extends Authenticatable implements CanResetPassword
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
     }
 
     /**

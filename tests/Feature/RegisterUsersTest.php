@@ -70,6 +70,7 @@ class RegisterUsersTest extends TestCase
     public function guest_users_can_create_registered_users()
     {
         $response = $this->registerUser([
+            'phone' => 1231231231,
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test.user@justinc.me',
@@ -87,6 +88,7 @@ class RegisterUsersTest extends TestCase
     public function first_name_is_required_to_register_standard_user()
     {
         $this->response = $this->post('/register', [
+            'phone' => 1231231231,
             'last_name' => 'User',
             'email' => 'test.user@justinc.me',
             'password' => 'abc123',
@@ -101,6 +103,7 @@ class RegisterUsersTest extends TestCase
     public function last_name_is_required_to_register_standard_user()
     {
         $this->response = $this->post('/register', [
+            'phone' => 1231231231,
             'first_name' => 'Test',
             'email' => 'test.user@justinc.me',
             'password' => 'abc123',
@@ -115,6 +118,7 @@ class RegisterUsersTest extends TestCase
     public function email_is_required_to_register_standard_user()
     {
         $this->response = $this->post('/register', [
+            'phone' => 1231231231,
             'first_name' => 'Test',
             'last_name' => 'User',
             'password' => 'abc123',
@@ -129,6 +133,7 @@ class RegisterUsersTest extends TestCase
     public function password_is_required_to_register_standard_user()
     {
         $this->response = $this->post('/register', [
+            'phone' => 1231231231,
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test.user@justinc.me'
@@ -143,6 +148,7 @@ class RegisterUsersTest extends TestCase
     public function password_confirmation_is_required_to_register_standard_user()
     {
         $this->response = $this->post('/register', [
+            'phone' => 1231231231,
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test.user@justinc.me',
@@ -155,9 +161,43 @@ class RegisterUsersTest extends TestCase
     /**
      * @test
      */
+    public function phone_number_is_required_to_register_standard_user()
+    {
+        $this->response = $this->post('/register', [
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test.user@justinc.me',
+            'password' => 'abc123',
+            'password_confirmation' => 'abc123'
+        ]);
+
+        $this->assertFieldHasValidationError('phone');
+    }
+
+    /**
+     * @test
+     */
+    public function phone_number_must_be_numeric_to_register_standard_user()
+    {
+        $this->response = $this->post('/register', [
+            'phone' => "abc123cba",
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test.user@justinc.me',
+            'password' => 'abc123',
+            'password_confirmation' => 'abc123'
+        ]);
+
+        $this->assertFieldHasValidationError('phone');
+    }
+
+    /**
+     * @test
+     */
     public function it_sends_welcome_email_to_new_users()
     {
         $this->registerUser([
+            'phone' => 1231231231,
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test.user@justinc.me',
