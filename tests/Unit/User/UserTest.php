@@ -73,6 +73,16 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    public function it_can_create_an_admin_user()
+    {
+        $user = User::createAdminUser('test.user@justinc.me', 'abc123');
+
+        $this->assertEquals(2, $user->fresh()->role_id);
+    }
+
+    /**
+     * @test
+     */
     public function it_can_return_its_role_by_name()
     {
         factory(Role::class)->states(['standard'])->create();

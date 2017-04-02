@@ -105,6 +105,20 @@ class User extends Authenticatable implements CanResetPassword
     }
 
     /**
+     * @param $email
+     * @param $password
+     * @return mixed
+     */
+    public static function createAdminUser($email, $password)
+    {
+        return self::create([
+            'email' => $email,
+            'password' => bcrypt($password),
+            'role_id' => 2
+        ]);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function reservations()

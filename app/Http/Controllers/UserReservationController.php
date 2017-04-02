@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Payment\PaymentGatewayInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UserReservationController extends Controller
 {
@@ -24,7 +25,7 @@ class UserReservationController extends Controller
      */
     public function index($user)
     {
-        if (auth()->user()->id !== $user->id) {
+        if (Gate::denies('show-reservations', $user)) {
             abort(403);
         }
         return response()->json([

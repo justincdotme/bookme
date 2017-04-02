@@ -6,6 +6,7 @@ use App\Core\Phone;
 use App\Core\User;
 use App\Mail\UserRegistration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -54,7 +55,7 @@ class UserController extends Controller
      */
     public function show($user)
     {
-        if ($user->id != auth()->user()->id) {
+        if (Gate::denies('show-user', $user)) {
             abort(403);
         }
         return view('public.users.show', [

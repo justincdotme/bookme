@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Core\Reservation;
 use App\Policies\ReservationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,17 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Gate::define('create-admin-user', function ($user) {
+            return $user->isAdmin();
+        });
+
+        Gate::define('show-user', function ($user, $userToShow) {
+            return ($userToShow->id == $user->id);
+        });
+
+        Gate::define('show-reservations', function ($user, $userToShow) {
+            return ($userToShow->id == $user->id);
+        });
     }
 }
