@@ -10,6 +10,20 @@ use Illuminate\Support\Facades\Mail;
 class UserController extends Controller
 {
     /**
+     * @param $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show($user)
+    {
+        if ($user->id != auth()->user()->id) {
+            abort(403);
+        }
+        return view('public.users.show', [
+            'user' => $user
+        ]);
+    }
+
+    /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()

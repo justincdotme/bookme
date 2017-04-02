@@ -29,6 +29,8 @@ Route::group(['middleware' => ['guest']], function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/users/{user}', 'UserController@show');
+
     Route::post('/properties/{property}/reservations', 'ReservationController@store');
 
     Route::get('/users/{user}/reservations/{reservation}', 'UserReservationController@show');
