@@ -61,6 +61,27 @@ class MyAccountTest extends TestCase
     /**
      * @test
      */
+    public function authenticated_user_cannot_update_another_user()
+    {
+        $this->user = factory(User::class)->create([
+            'id' => 1
+        ]);
+        $user2 = factory(User::class)->create([
+            'id' => 2
+        ]);
+
+        $response = $this->actingAs($this->user)->put("/users/{$user2->id}", [
+            'first_name' => 'foo',
+            'last_name' => 'bar',
+            'phone' => 9999999999
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    /**
+     * @test
+     */
     public function first_name_is_required_to_update_standard_user()
     {
         $this->user = factory(User::class)->create();

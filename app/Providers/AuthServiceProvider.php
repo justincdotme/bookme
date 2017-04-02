@@ -31,6 +31,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isAdmin();
         });
 
+        Gate::define('update-user', function ($user, $userToUpdate) {
+            return ($userToUpdate->id == $user->id);
+        });
+
         Gate::define('show-user', function ($user, $userToShow) {
             return ($userToShow->id == $user->id);
         });
