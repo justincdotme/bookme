@@ -53,6 +53,14 @@ class Reservation extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function billingAddress()
+    {
+        return $this->belongsTo(Address::class, 'address_id', 'id');
+    }
+
+    /**
      * @return mixed
      */
     public function getLengthOfStay()
@@ -63,16 +71,19 @@ class Reservation extends Model
     /**
      * @param $paymentGateway
      * @param $token
+     * @param $billingAddress
      * @return $this
      */
-    public function complete($paymentGateway, $token)
+    public function complete($paymentGateway, $token, $billingAddress)
     {
         $charge = $paymentGateway->charge($this->calculateTotal(), $token);
         $this->update([
             'status' => 'paid',
             'amount' => $paymentGateway->getTotalCharges(),
-            'charge_id' => $charge->getId()
+            'charge_id' => $charge->getId(),
+            'address_id' => $billingAddress->id
         ]);
+
         return $this;
     }
 

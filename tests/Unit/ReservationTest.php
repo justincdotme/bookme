@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Core\Address;
 use App\Core\Payment\TestPaymentGateway;
 use App\Core\Property\Property;
 use App\Core\Reservation;
@@ -14,6 +15,21 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ReservationTest extends TestCase
 {
     use DatabaseMigrations;
+
+    protected $billingAddress;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->billingAddress = Address::create([
+            'line1' => '123 Any St.',
+            'line2' => 'Apt B.',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
+        ]);
+    }
+
     /**
      * @test
      */
@@ -114,7 +130,7 @@ class ReservationTest extends TestCase
         $paymentGateway = new TestPaymentGateway;
         $token = $paymentGateway->getValidTestToken();
 
-        $reservation->complete($paymentGateway, $token);
+        $reservation->complete($paymentGateway, $token, $this->billingAddress);
 
         $this->assertNotNull($reservation->charge_id);
         $this->assertStringStartsWith(
@@ -168,5 +184,26 @@ class ReservationTest extends TestCase
         }
 
         $this->fail('Reservation was updated to a date that is already reserved!');
+    }
+
+    /**
+     * @test
+     */
+    public function it_stores_billing_address()
+    {
+        $property = factory(Property::class)->create();
+        $reservation = factory(Reservation::class)->create([
+            'property_id' => $property->id
+        ]);
+        $paymentGateway = new TestPaymentGateway;
+        $token = $paymentGateway->getValidTestToken();
+
+        $reservation->complete($paymentGateway, $token, $this->billingAddress);
+
+        $this->assertNotNull($reservation->billingAddress);
+        $this->assertArraySubset(
+            $reservation->billingAddress->toArray(),
+            $this->billingAddress->toArray()
+        );
     }
 }

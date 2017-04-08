@@ -38,6 +38,21 @@ class ReservePropertyTest extends TestCase
     /**
      * @test
      */
+    public function authenticated_user_can_view_reservation_create_view()
+    {
+        $this->user = factory(User::class)->states(['standard'])->create();
+        $this->property = factory(Property::class)->create();
+
+        $response = $this->actingAs($this->user)->get("/properties/{$this->property->id}/reservations/create");
+
+        $response->assertStatus(200);
+        $response->assertViewHas('stateList');
+        $response->assertViewHas('property');
+    }
+
+    /**
+     * @test
+     */
     public function authenticated_user_can_make_reservation()
     {
         $this->user = factory(User::class)->states(['standard'])->create([
@@ -59,7 +74,11 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::now()->toDateString(),
             'date_end' => Carbon::parse('+1 week')->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken()
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ]);
 
         $reservation = $this->property->reservations()->first();
@@ -79,7 +98,11 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::now()->toDateString(),
             'date_end' => Carbon::parse('+1 week')->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken()
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ], $useUnauthenticatedUser);
 
         $this->response->assertStatus(401);
@@ -108,7 +131,11 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([
             'date_start' => $dateStart->toDateString(),
             'date_end' => $dateEnd->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken()
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ]);
 
         $userName = e($this->user->name);
@@ -140,7 +167,11 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::parse('+1 week')->toDateString(),
             'date_end' => Carbon::parse('+10 days')->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken()
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ]);
 
         $this->response->assertJsonFragment([
@@ -168,7 +199,11 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::parse('+1 week')->toDateString(),
             'date_end' => Carbon::parse('+10 days')->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken()
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ]);
 
         $this->response->assertJsonFragment([
@@ -186,7 +221,11 @@ class ReservePropertyTest extends TestCase
         ]);
         $params = [
             'date_start' => Carbon::parse('+1 week'),
-            'date_end' => Carbon::parse('+10 days')
+            'date_end' => Carbon::parse('+10 days'),
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ];
 
         $response = $this->actingAs($this->user)->json('POST', "/properties/x/reservations", $params);
@@ -206,7 +245,11 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([
             'date_start' => Carbon::parse('+1 days')->toDateString(),
             'date_end' => Carbon::parse('+2 days')->toDateString(),
-            'payment_token' => 'invalid-payment-token'
+            'payment_token' => 'invalid-payment-token',
+            'line1' => '123 Foo St',
+            'city' => 'Fooville',
+            'state_id' => 1,
+            'zip' => 12345
         ]);
 
         $this->response->assertStatus(422);
@@ -246,6 +289,70 @@ class ReservePropertyTest extends TestCase
         $this->response = $this->reserveProperty([]);
 
         $this->assertFieldHasValidationError('date_end');
+    }
+
+    /**
+     * @test
+     */
+    public function street_address_is_required_to_reserve_a_property()
+    {
+        $this->response = $this->reserveProperty([]);
+
+        $this->assertFieldHasValidationError('line1');
+    }
+
+    /**
+     * @test
+     */
+    public function city_is_required_to_reserve_a_property()
+    {
+        $this->response = $this->reserveProperty([]);
+
+        $this->assertFieldHasValidationError('city');
+    }
+
+    /**
+     * @test
+     */
+    public function state_id_is_required_to_reserve_a_property()
+    {
+        $this->response = $this->reserveProperty([]);
+
+        $this->assertFieldHasValidationError('state_id');
+    }
+
+    /**
+     * @test
+     */
+    public function state_id_must_be_integer_to_reserve_a_property()
+    {
+        $this->response = $this->reserveProperty([
+            'state_id' => 'x'
+        ]);
+
+        $this->assertFieldHasValidationError('state_id');
+    }
+
+    /**
+     * @test
+     */
+    public function zip_is_required_to_reserve_a_property()
+    {
+        $this->response = $this->reserveProperty([]);
+
+        $this->assertFieldHasValidationError('zip');
+    }
+
+    /**
+     * @test
+     */
+    public function zip_must_be_numeric_to_reserve_a_property()
+    {
+        $this->response = $this->reserveProperty([
+            'zip' => 'abc'
+        ]);
+
+        $this->assertFieldHasValidationError('zip');
     }
 
     /**

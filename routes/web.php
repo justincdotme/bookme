@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::put('/users/{user}', 'UserController@update');
 
+    Route::get('/properties/{property}/reservations/create', 'ReservationController@create');
+
     Route::post('/properties/{property}/reservations', 'ReservationController@store');
 
     Route::get('/users/{user}/reservations/{reservation}', 'UserReservationController@show');

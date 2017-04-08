@@ -23,17 +23,6 @@ class ReservationPolicy
     }
 
     /**
-     * Determine whether the user can create reservations.
-     *
-     * @param  \App\Core\User  $user
-     * @return mixed
-     */
-    public function create(User $user)
-    {
-        return ($user == auth()->user());
-    }
-
-    /**
      * Determine whether the user can update the reservation.
      *
      * @param  \App\Core\User  $user
