@@ -14,25 +14,13 @@ use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
-    protected $paymentGateway;
-
-    /**
-     * PropertyReservationController constructor.
-     * @param PaymentGatewayInterface $paymentGateway
-     */
-    function __construct(PaymentGatewayInterface $paymentGateway)
-    {
-        //TODO - Use method injection here
-        $this->paymentGateway = $paymentGateway;
-    }
-
     /**
      * Create a new property reservation.
      *
      * @param Property $property
      * @return \Illuminate\Http\Response
      */
-    public function store($property)
+    public function store($property, PaymentGatewayInterface $paymentGateway)
     {
         $this->authorize('create', Reservation::class);
 
@@ -47,7 +35,7 @@ class ReservationController extends Controller
         try {
             $user = auth()->user();
             $reservation = $property->reserveFor(request('date_start'), request('date_end'), $user);
-            $confirmation = $reservation->complete($this->paymentGateway, request('payment_token'));
+            $confirmation = $reservation->complete($paymentGateway, request('payment_token'));
             Mail::send(new ReservationComplete($user, $confirmation, config('mail')));
 
             return response()->json([
