@@ -146,4 +146,23 @@ class PropertyTest extends TestCase
         $this->assertInstanceOf(PropertyImage::class, $propertyImage);
         $this->assertEquals($property->id, $propertyImage->property_id);
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_featured_properties()
+    {
+        $property = factory(Property::class)->states(['available'])->create([
+            'id' => 1
+        ]);
+        factory(Property::class)->states(['available'])->create([
+            'id' => 2,
+            'featured' => true
+        ]);
+
+        $featuredProperties = $property->featured()->get();
+
+        $this->assertCount(1, $featuredProperties);
+        $this->assertEquals(2, $featuredProperties->first()->id);
+    }
 }

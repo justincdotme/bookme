@@ -20,4 +20,16 @@ class PublicHomeTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    /**
+     * @test
+     */
+    public function homepage_contains_featured_properties()
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+
+        $response->assertViewHas('featuredProperties');
+    }
 }

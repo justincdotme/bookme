@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Core\Property\Property;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
+     * @param Property $property
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Property $property)
     {
-        return view('public.home');
+        return view('public.home', [
+            'featuredProperties' => $property->featured()->get()
+        ]);
     }
 }

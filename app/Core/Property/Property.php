@@ -99,6 +99,16 @@ class Property extends Model
             ->isEmpty();
     }
 
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
+    }
+
     /**
      * @param $dateStart
      * @param $dateEnd
