@@ -12,55 +12,59 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class SearchForPropertiesTest extends TestCase
 {
     use DatabaseMigrations;
-    /**
-     * @test
-     */
-    public function user_can_search_for_properties_by_city_and_state()
+
+    protected $properties;
+
+    protected function setUp()
     {
-        $washington = factory(State::class)->create([
-            'id' => 1,
-            'abbreviation' => 'WA'
-        ]);
-        $oregon = factory(State::class)->create([
-            'id' => 2,
-            'abbreviation' => 'OR'
-        ]);
-        $vancouverProperty = factory(Property::class)->create([
+        parent::setUp();
+        $this->properties = collect([]);
+        $this->properties->push(factory(Property::class)->create([
             'state_id' => 1,
             'city' => 'vancouver'
-        ]);
-        $portlandProperty = factory(Property::class)->create([
+        ]));
+        $this->properties->push(factory(Property::class)->create([
             'state_id' => 2,
             'city' => 'portland'
-        ]);
-
-
-        $response = $this->post("/properties/search", [
-            'city' => 'vancouver',
-            'state' => $washington->id
-        ]);
-
-        $response = $response->assertStatus(200)->assertJsonFragment([
-           'status' => 'success'
-        ])->decodeResponseJson()['properties']['data'];
-        $this->assertContains('vancouver', strtolower($response[0]['city']));
-        $this->assertContains("{$washington->id}", $response[0]['state_id']);
-        $this->assertArrayNotHasKey(1, $response);
+        ]));
     }
 
     /**
      * @test
      */
-    public function it_returns_view_with_all_properties_when_no_query_is_supplied()
+    public function user_can_search_for_properties_by_city_and_state()
     {
-        factory(State::class)->create([
-            'id' => 1,
-            'abbreviation' => 'WA'
-        ]);
-        factory(Property::class)->create([
-            'state_id' => 1
+        $response = $this->json('GET', "/properties/search", [
+            'type' => 'city-state',
+            'city' => 'vancouver',
+            'state' => 1
         ]);
 
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'status' => 'success'
+        ]);
+        $this->assertArrayHasKey('properties', $response->decodeResponseJson());
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_unfiltered_list_when_no_query_is_supplied()
+    {
+        $response = $this->json('GET', '/properties/search');
+
+        $response->assertStatus(200);
+        $json = $response->decodeResponseJson();
+        $this->assertCount(2, $json['properties']['data']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_view_for_non_xhr_requests()
+    {
         $response = $this->get('/properties/search');
 
         $response->assertStatus(200);

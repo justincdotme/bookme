@@ -22,6 +22,7 @@ class ReservationController extends Controller
      */
     function __construct(PaymentGatewayInterface $paymentGateway)
     {
+        //TODO - Use method injection here
         $this->paymentGateway = $paymentGateway;
     }
 

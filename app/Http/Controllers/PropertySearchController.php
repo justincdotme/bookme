@@ -2,33 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Property\Property;
+use App\Core\Property\PropertySearch;
 use Illuminate\Http\Request;
 
 class PropertySearchController extends Controller
 {
     /**
+     * @param PropertySearch $propertySearch
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function search(PropertySearch $propertySearch)
     {
-        return view('public.properties.index', [
-            'properties' => Property::all()
-        ]);
-    }
+        $properties = $propertySearch
+            ->setType(request('searchType'))
+            ->search(request()->toArray())
+            ->getResults(10);
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function search()
-    {
-        $properties =  Property::searchCityState(
-            request('city'),
-            request('state')
-        )->paginate(10);
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'properties' => $properties
+            ]);
+        }
 
-        return response()->json([
-            'status' => 'success',
+        return view('public.properties.search', [
             'properties' => $properties
         ]);
     }
