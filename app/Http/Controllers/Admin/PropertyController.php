@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Core\Property\Property;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class PropertyController extends Controller

@@ -135,21 +135,6 @@ class PropertyTest extends TestCase
     /**
      * @test
      */
-    public function makeImage_returns_a_propertyImage_model()
-    {
-        $property = factory(Property::class)->states(['available'])->make([
-            'id' => 1
-        ]);
-
-        $propertyImage = $property->makeImage();
-
-        $this->assertInstanceOf(PropertyImage::class, $propertyImage);
-        $this->assertEquals($property->id, $propertyImage->property_id);
-    }
-
-    /**
-     * @test
-     */
     public function it_returns_featured_properties()
     {
         $property = factory(Property::class)->states(['available'])->create([

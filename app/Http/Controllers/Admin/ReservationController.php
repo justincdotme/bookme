@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\AlreadyReservedException;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ReservationController extends Controller
@@ -20,7 +19,7 @@ class ReservationController extends Controller
             'reservation' => $reservation,
             'property' => $property,
             'user' => $reservation->user,
-            'paymentUrl' => config('app.payment.url') . DIRECTORY_SEPARATOR . $reservation->charge_id
+            'paymentUrl' => config('app.payment.url') . "/{$reservation->charge_id}"
         ]);
     }
 

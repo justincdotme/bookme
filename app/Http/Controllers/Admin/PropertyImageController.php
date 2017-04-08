@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Core\Property\Property;
+use App\Core\Property\PropertyImage;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 
@@ -23,25 +23,19 @@ class PropertyImageController extends Controller
      */
     public function store($property)
     {
-        $this->validate(request(), [
-            'image' => 'required|mimes:jpeg,png,gif'
-        ]);
+        $this->validate(request(), ['image' => 'required|mimes:jpeg,png,gif']);
 
         $image = request()->file('image')->move(
             config('filesystems.property.image') . $property->id . DIRECTORY_SEPARATOR
         );
-        $imageData = request()->only([
-            'height',
-            'width',
-            'x',
-            'y'
-        ]);
 
-        $propertyImage = $property->makeImage()
+        $propertyImage = $property->images()
+            ->create([])
             ->setImageManager($this->imageManager)
-            ->processUpload($image, $imageData);
-
-        File::delete($image->getRealPath());
+            ->processUpload(
+                $image,
+                request()->only(['height', 'width', 'x', 'y'])
+            );
 
         return response()->json([
             'status' => 'success',

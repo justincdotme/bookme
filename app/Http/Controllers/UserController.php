@@ -39,10 +39,9 @@ class UserController extends Controller
             'password' => request('password')
         ]);
 
-        $phone = Phone::create([
+        $user->phones()->create([
             'phone' => request('phone')
         ]);
-        $user->phones()->save($phone);
 
         Mail::send(new UserRegistration($user, config('mail')));
 

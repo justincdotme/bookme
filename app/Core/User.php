@@ -17,7 +17,7 @@ class User extends Authenticatable implements CanResetPassword
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     /**
      * @var array

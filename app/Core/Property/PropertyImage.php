@@ -3,6 +3,7 @@
 namespace App\Core\Property;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 class PropertyImage extends Model
 {
@@ -38,6 +39,8 @@ class PropertyImage extends Model
             'full_path' => $fullPath,
             'thumb_path' => $thumbPath,
         ]);
+
+        File::delete($image->getRealPath());
 
         return $this;
     }

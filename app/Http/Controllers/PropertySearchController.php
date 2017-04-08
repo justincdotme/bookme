@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Core\Property\PropertySearch;
-use Illuminate\Http\Request;
 
 class PropertySearchController extends Controller
 {

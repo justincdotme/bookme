@@ -47,11 +47,10 @@ class PropertySearch
      */
     protected function byCityState($city, $stateId)
     {
-        $searchParams = [
+        return $this->property->where([
             ['city', strtolower($city)],
             ['state_id', $stateId]
-        ];
-        return $this->property->where($searchParams);
+        ]);
     }
 
     /**
@@ -63,14 +62,11 @@ class PropertySearch
     }
 
     /**
-     * @param int $paginateCount
+     * @param int $paginateCount - Defaults to 10
      * @return mixed
      */
-    public function getResults($paginateCount = 0)
+    public function getResults($paginateCount = 10)
     {
-        if ($paginateCount) {
-            return $this->results->paginate($paginateCount);
-        }
-        return $this->results->get();
+        return $this->results->paginate($paginateCount);
     }
 }

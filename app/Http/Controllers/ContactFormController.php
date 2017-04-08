@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Mail\ContactFormConfirmation;
 use App\Mail\ContactFormSubmission;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ContactFormController extends Controller

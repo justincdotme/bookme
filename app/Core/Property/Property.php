@@ -57,11 +57,12 @@ class Property extends Model
     }
 
     /**
-     * @return Model
+     * @param $query
+     * @return mixed
      */
-    public function makeImage()
+    public function scopeFeatured($query)
     {
-        return $this->images()->create([]);
+        return $query->where('featured', true);
     }
 
     /**
@@ -79,19 +80,20 @@ class Property extends Model
     {
         return $this->street_address_line_1 . PHP_EOL .
             ((null != $this->street_address_line_2) ? $this->street_address_line_2 . PHP_EOL : '') .
-            $this->city . ', ' . $this->state->abbreviation . ' ' . $this->zip;
+            "{$this->city}, {$this->state->abbreviation} {$this->zip}";
     }
 
     /**
      * @param $dateStart
      * @param $dateEnd
+     * @param null $excludingReservation
      * @return mixed
      */
-    public function isAvailableBetween($dateStart, $dateEnd, $excluding = null)
+    public function isAvailableBetween($dateStart, $dateEnd, $excludingReservation = null)
     {
         return $this->reservations()
             ->active()
-            ->excluding($excluding)
+            ->excluding($excludingReservation)
             ->where(function ($query) use ($dateStart, $dateEnd) {
                 return $query->whereBetween('date_start', [$dateStart, $dateEnd])
                     ->orWhereBetween('date_end', [$dateStart, $dateEnd]);
@@ -99,15 +101,6 @@ class Property extends Model
             ->isEmpty();
     }
 
-
-    /**
-     * @param $query
-     * @return mixed
-     */
-    public function scopeFeatured($query)
-    {
-        return $query->where('featured', true);
-    }
 
     /**
      * @param $dateStart
@@ -118,8 +111,7 @@ class Property extends Model
     public function reserveFor($dateStart, $dateEnd, $user)
     {
         if ($this->isAvailableBetween($dateStart, $dateEnd)) {
-            return Reservation::create([
-                'property_id' => $this->id,
+            return $this->reservations()->create([
                 'user_id' => $user->id,
                 'status' => 'pending',
                 'date_start' => $dateStart,

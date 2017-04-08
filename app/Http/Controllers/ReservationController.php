@@ -11,7 +11,6 @@ use App\Exceptions\AlreadyReservedException;
 use App\Core\Payment\PaymentGatewayInterface;
 use App\Mail\ReservationCancelled;
 use App\Mail\ReservationComplete;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
