@@ -29,7 +29,7 @@ Route::group(['middleware' => ['guest']], function () {
 
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 
-    Route::post('/login', 'UserController@login')->name('login.post');
+    Route::post('/login', 'Auth\LoginController@login')->name('login.post');
 });
 
 Route::group(['middleware' => ['auth']], function () {
