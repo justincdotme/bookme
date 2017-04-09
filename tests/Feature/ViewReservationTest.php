@@ -53,8 +53,8 @@ class ViewReservationTest extends TestCase
         $response->assertSee("{$reservation->formatted_date_end}");
         $response->assertSee("Cancel Reservation");
         $response->assertViewHas('user');
-        $response->assertSee($user->first_name);
-        $response->assertSee($user->last_name);
+        $response->assertSee(e($user->first_name));
+        $response->assertSee(e($user->last_name));
         $response->assertViewHas('charge');
         $response->assertSee('4242');
         $response->assertSee('Visa');
