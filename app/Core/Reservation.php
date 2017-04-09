@@ -57,7 +57,7 @@ class Reservation extends Model
      */
     public function billingAddress()
     {
-        return $this->belongsTo(Address::class, 'address_id', 'id');
+        return $this->belongsTo(BillingAddress::class);
     }
 
     /**
@@ -81,7 +81,7 @@ class Reservation extends Model
             'status' => 'paid',
             'amount' => $paymentGateway->getTotalCharges(),
             'charge_id' => $charge->getId(),
-            'address_id' => $billingAddress->id
+            'billing_address_id' => $billingAddress->id
         ]);
 
         return $this;

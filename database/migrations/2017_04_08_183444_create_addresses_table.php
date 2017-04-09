@@ -13,7 +13,7 @@ class CreateAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('billing_addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('line1');
             $table->string('line2')->nullable();

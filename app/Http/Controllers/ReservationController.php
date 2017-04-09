@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Core\Address;
+use App\Core\BillingAddress as Address;
 use App\Core\Payment\PaymentFailedException;
 use App\Core\Property\Property;
 use App\Core\Reservation;

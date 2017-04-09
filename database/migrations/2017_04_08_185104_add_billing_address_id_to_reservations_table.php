@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAddressIdToReservationsTable extends Migration
+class AddBillingAddressIdToReservationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddAddressIdToReservationsTable extends Migration
     public function up()
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->integer('address_id')->unsigned()->index()->nullable();
-            $table->foreign('address_id')->references('id')->on('addresses');
+            $table->integer('billing_address_id')->unsigned()->index()->nullable();
+            $table->foreign('billing_address_id')->references('id')->on('billing_addresses');
         });
     }
 
@@ -27,7 +27,7 @@ class AddAddressIdToReservationsTable extends Migration
     public function down()
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->dropColumn('address_id');
+            $table->dropColumn('billing_address_id');
         });
     }
 }

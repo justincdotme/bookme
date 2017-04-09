@@ -4,7 +4,7 @@ namespace App\Core;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Address extends Model
+class BillingAddress extends Model
 {
     protected $guarded = [];
 
