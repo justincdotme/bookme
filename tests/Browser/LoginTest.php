@@ -9,24 +9,47 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class LoginTest extends DuskTestCase
 {
+    protected $user;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->user = factory(User::class)->create([
+            'password' => bcrypt('secret')
+        ]);
+    }
+
     /**
      * @test
-     * @return void
      */
     public function a_user_can_log_in()
     {
-        $user = factory(User::class)->create([
-            'password' => bcrypt('secret')
-        ]);
-        $this->browse(function (Browser $browser) use ($user) {
+        $this->browse(function (Browser $browser) {
             $browser->visit('/login')
                 ->assertSee('Login')
-                    ->type('email', $user->email)
+                    ->type('email', $this->user->email)
                     ->type('password', 'secret')
                     ->press('Login')
                     ->assertPathIs('/');
         });
+    }
 
-        $user->delete();
+    /**
+     * @test
+     */
+    public function an_authenticated_user_cant_visit_login()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs($this->user)
+                ->visit('/login')
+                ->assertPathIs('/');
+        });
+    }
+
+    protected function tearDown()
+    {
+        $this->user->delete();
+        parent::tearDown();
+
     }
 }
