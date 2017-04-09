@@ -22,7 +22,7 @@ class LoginTest extends DuskTestCase
     /**
      * @test
      */
-    public function a_user_can_log_in()
+    public function a_non_authenticated_user_can_log_in()
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/login')
