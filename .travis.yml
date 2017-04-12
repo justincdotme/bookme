@@ -24,5 +24,4 @@ before_script:
 
 script:
     - phpunit tests/Unit --exclude-group external
-    - php artisan dusk
     - phpunit tests/Feature
