@@ -11,6 +11,8 @@ class LoginTest extends DuskTestCase
 {
     protected $user;
 
+    use DatabaseMigrations;
+
     protected function setUp()
     {
         parent::setUp();
@@ -48,8 +50,6 @@ class LoginTest extends DuskTestCase
 
     protected function tearDown()
     {
-        $this->user->delete();
         parent::tearDown();
-
     }
 }
