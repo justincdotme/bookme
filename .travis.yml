@@ -19,7 +19,10 @@ before_script:
   - cp .env.testing .env
   - php artisan serve --env=test &
 
+before_script:
+    - touch database/bookme.sqlite
+
 script:
-    - phpunit tests/Unit
+    - phpunit tests/Unit --exclude-group external
     - php artisan dusk
     - phpunit tests/Feature
