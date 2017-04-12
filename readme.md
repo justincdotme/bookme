@@ -1,4 +1,4 @@
-# bookMe [![Build Status](https://travis-ci.org/justincdotme/bookme.svg?branch=master)](https://travis-ci.org/justincdotme/bookme)
+# bookMe [![Build Status](https://travis-ci.org/justincdotme/bookme.svg?branch=development)](https://travis-ci.org/justincdotme/bookme)
 
  bookMe is a Laravel 5 application for booking and managing rental property reservations. 
  
