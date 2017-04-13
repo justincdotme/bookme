@@ -23,5 +23,5 @@ before_script:
     - touch database/bookme.sqlite
 
 script:
-    - phpunit tests/Unit --exclude-group external
+    - phpunit tests/Unit
     - phpunit tests/Feature
