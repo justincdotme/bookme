@@ -25,4 +25,3 @@ before_script:
 script:
     - phpunit tests/Unit
     - phpunit tests/Feature
-    - php artisan dusk
