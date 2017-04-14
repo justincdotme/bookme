@@ -1,3 +1,5 @@
+@extends('public.layouts.public-main')
+@section('content')
 <h3>Details</h3>
 Reserved By: {{ $user->first_name }} {{ $user->last_name }}
 Reservation Number: {{ $reservation->id }} <br>
@@ -13,3 +15,4 @@ Card: {{ $charge->getCardBrand() }}
 Name: {{ $property->name }}<br>
 Address: {!!  nl2br($property->formatted_address) !!}<br>
 <button>Cancel Reservation</button>
+@endsection
