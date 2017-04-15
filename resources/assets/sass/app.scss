@@ -1,16 +1,9 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
-
-$white: #ffffff;
-$light-blue: #21c5da;
-$med-blue: #02bdd5;
-$dark-blue: #029eb2;
-$dark-grey: #999999;
-$blue-text: #08535c;
-
-$top-buffer: 24px;
+@import './common.scss';
 
 body {
     font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    border-radius: 0 !important;
 }
 
 h1 {
@@ -36,8 +29,10 @@ a {
     }
 
     li > a:hover,
+    li > a:focus,
     li.active a {
         background-color: $light-blue;
+        outline: none;
         color: $white;
     }
 
@@ -94,6 +89,10 @@ footer {
     height: 210px;
 }
 
+#account-links {
+    margin-right: 0;
+}
+
 @media(max-width:767px){
     #account-links {
         display: none;
@@ -105,11 +104,26 @@ footer {
         }
         background-color: $light-blue;
         padding: 12px;
-        border-radius: 0;
     }
 
     #main-navigation {
         margin: 0 auto;
         width: 100%;
+    }
+}
+
+@media(min-width: 768px) {
+    #header-image {
+        background: url("/images/licensed/header-image.jpg") no-repeat;
+        height: 365px;
+        max-width: 100%;
+        margin-top: 36px;
+        background-position-y: -58px;
+    }
+}
+@media(min-width:992px){
+    #header-image {
+        height: 480px;
+        background-position-y: 0;
     }
 }

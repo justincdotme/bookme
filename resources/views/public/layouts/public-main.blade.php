@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>bookMe - Home</title>
+    <title>@yield('title')</title>
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,19 +35,25 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul id="main-navigation" class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">Search</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li{{ request()->is("/") ? ' class=active ' : '' }}><a href="#">Home</a></li>
+                <li{{ request()->is("/search") ? ' class=active ' : '' }}><a href="#">Search</a></li>
+                <li{{ request()->is("/contact") ? ' class=active ' : '' }}><a href="#">Contact</a></li>
             </ul>
             <ul id="account-links" class="nav navbar-nav navbar-right blue-border">
-                <li><a href="#">Login</a></li>
-                <li><a href="#">Signup</a></li>
+                @if (!Auth::check())
+                    <li{{ request()->is("/login") ? ' class=active ' : '' }}><a href="#">Login</a></li>
+                    <li{{ request()->is("/register") ? ' class=active ' : '' }}><a href="#">Register</a></li>
+                @else
+                    <li><a href="#">My Account</a></li>
+                @endif
             </ul>
         </div>
     </div>
 </nav>
 <div id="content" class="container">
     @yield('content')
+</div>
+<div class="container">
     <footer>
         <span>&copy;2017 Justin Christenson<br> All Rights Reserved</span>
     </footer>
