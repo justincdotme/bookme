@@ -15,7 +15,7 @@ class PropertySearchController extends Controller
         $properties = $propertySearch
             ->setType(request('searchType'))
             ->search(request()->toArray())
-            ->getResults(10);
+            ->getResults(request('count') ?: 10);
 
         if (request()->wantsJson()) {
             return response()->json([
