@@ -679,6 +679,12 @@ module.exports = function bind(fn, thisArg) {
 
 __webpack_require__(30);
 
+bar = {
+    getFoo: function getFoo() {
+        console.log('foo');
+    }
+};
+
 /***/ }),
 /* 11 */
 /***/ (function(module, exports) {
