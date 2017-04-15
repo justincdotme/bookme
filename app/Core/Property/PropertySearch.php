@@ -31,7 +31,11 @@ class PropertySearch
     {
         switch ($this->type) {
             case 'city-state':
-                $this->results = $this->byCityState($query['city'], $query['state']);
+                if (isset($query['city']) && isset($query['state'])) {
+                    $this->results = $this->byCityState($query['city'], $query['state']);
+                } else {
+                    $this->results = $this->withoutQuery();
+                }
                 break;
             default:
                 $this->results = $this->withoutQuery();
