@@ -35,14 +35,14 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul id="main-navigation" class="nav navbar-nav">
-                <li{{ request()->is("/") ? ' class=active ' : '' }}><a href="#">Home</a></li>
-                <li{{ request()->is("properties/search") ? ' class=active ' : '' }}><a href="#">Search</a></li>
-                <li{{ request()->is("contact") ? ' class=active ' : '' }}><a href="#">Contact</a></li>
+                <li{{ request()->is("/") ? ' class=active ' : '' }}><a href="/">Home</a></li>
+                <li{{ request()->is("properties/search") ? ' class=active ' : '' }}><a href="/properties/search">Search</a></li>
+                <li{{ request()->is("contact") ? ' class=active ' : '' }}><a href="/contact">Contact</a></li>
             </ul>
             <ul id="account-links" class="nav navbar-nav navbar-right blue-border">
                 @if (!Auth::check())
-                    <li{{ request()->is("login") ? ' class=active ' : '' }}><a href="#">Login</a></li>
-                    <li{{ request()->is("register") ? ' class=active ' : '' }}><a href="#">Register</a></li>
+                    <li{{ request()->is("login") ? ' class=active ' : '' }}><a href="/login">Login</a></li>
+                    <li{{ request()->is("register") ? ' class=active ' : '' }}><a href="/register">Register</a></li>
                 @else
                     <li><a href="#">My Account</a></li>
                 @endif
