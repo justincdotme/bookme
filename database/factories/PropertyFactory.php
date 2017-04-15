@@ -8,7 +8,7 @@ $factory->define(App\Core\Property\Property::class, function (Faker\Generator $f
         'long_description' => $faker->sentences(3, true),
         'street_address_line_1' => $faker->streetAddress,
         'street_address_line_2' => null,
-        'city' => $faker->city,
+        'city' => strtolower($faker->city),
         'state_id' => 1,
         'zip' => rand(11111, 99999),
         'status' => 'available'
