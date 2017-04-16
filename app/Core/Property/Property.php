@@ -12,7 +12,7 @@ class Property extends Model
 {
     protected $guarded = [];
 
-    protected $with = ['state'];
+    protected $with = ['state', 'images'];
 
     public $rules = [
         'rate' => 'integer',
