@@ -14,11 +14,6 @@
     <![endif]-->
 </head>
 <body>
-<script>
-    window.bookMe = {
-        csrfToken: "{!! csrf_token() !!}"
-    };
-</script>
 <nav class="navbar navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -58,8 +53,15 @@
         <span>&copy;2017 Justin Christenson<br> All Rights Reserved</span>
     </footer>
 </div>
+<script>
+    window.requestTokens = {
+        csrf: "{!! csrf_token() !!}"
+    };
+</script>
+@stack('vars')
 <script src="{{ mix('/js/manifest.js') }}"></script>
 <script src="{{ mix('/js/vendor.js') }}"></script>
 <script src="{{ mix('/js/app.js') }}"></script>
+@stack('scripts')
 </body>
 </html>
