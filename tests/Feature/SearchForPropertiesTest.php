@@ -44,7 +44,9 @@ class SearchForPropertiesTest extends TestCase
         $response->assertJsonFragment([
             'status' => 'success'
         ]);
-        $this->assertArrayHasKey('properties', $response->decodeResponseJson());
+        $json = $response->decodeResponseJson();
+        $this->assertArrayHasKey('properties', $json);
+        $this->assertArrayHasKey('query', $json);
 
     }
 
@@ -69,5 +71,6 @@ class SearchForPropertiesTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewHas('properties');
+        $response->assertViewHas('query');
     }
 }
