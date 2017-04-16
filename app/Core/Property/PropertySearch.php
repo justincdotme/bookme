@@ -7,6 +7,7 @@ class PropertySearch
     protected $type;
     protected $property;
     protected $results;
+    protected $query;
 
     function __construct(Property $property)
     {
@@ -29,6 +30,7 @@ class PropertySearch
      */
     public function search($query = null)
     {
+        $this->query = $query;
         switch ($this->type) {
             case 'city-state':
                 if (isset($query['city']) && isset($query['state'])) {
@@ -71,6 +73,20 @@ class PropertySearch
      */
     public function getResults($paginateCount = 10)
     {
-        return $this->results->paginate($paginateCount);
+        return $this->results->paginate($paginateCount)->withPath("/properties/search{$this->getQueryString()}");
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueryString()
+    {
+        if (empty($this->query)) {
+            return null;
+        }
+
+        unset($this->query['page']);
+        $queryString = http_build_query($this->query);
+        return "?{$queryString}";
     }
 }

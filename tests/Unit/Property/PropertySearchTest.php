@@ -79,4 +79,40 @@ class PropertySearchTest extends TestCase
 
         $this->assertCount(4, $search);
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_the_search_as_query_string()
+    {
+        $search = $this->propertySearch->search(['city' => 'fooville', 'state' => 1]);
+
+        $queryString = $search->getQueryString();
+
+        $this->assertEquals("?city=fooville&state=1", $queryString);
+    }
+
+    /**
+     * @test
+     */
+    public function query_string_is_null_if_no_search_terms_are_provided()
+    {
+        $search = $this->propertySearch->search();
+
+        $queryString = $search->getQueryString();
+
+        $this->assertNull($queryString);
+    }
+
+    /**
+     * @test
+     */
+    public function page_param_is_not_included_with_query_string()
+    {
+        $search = $this->propertySearch->search(['city' => 'fooville', 'state' => 1, 'page' => 1]);
+
+        $queryString = $search->getQueryString();
+
+        $this->assertEquals("?city=fooville&state=1", $queryString);
+    }
 }

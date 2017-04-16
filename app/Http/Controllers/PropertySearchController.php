@@ -14,20 +14,18 @@ class PropertySearchController extends Controller
     {
         $properties = $propertySearch
             ->setType(request('searchType'))
-            ->search($query = request()->toArray())
+            ->search(request()->toArray())
             ->getResults(request('count') ?: 10);
 
         if (request()->wantsJson()) {
             return response()->json([
                 'status' => 'success',
-                'properties' => $properties,
-                'query' => $query
+                'properties' => $properties
             ]);
         }
 
         return view('public.properties.search', [
-            'properties' => $properties,
-            'query' => $query
+            'properties' => $properties
         ]);
     }
 }
