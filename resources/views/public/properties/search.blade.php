@@ -1,14 +1,14 @@
 @extends('public.layouts.public-main')
 @section('title', 'bookMe - Search Properties')
 @section('content')
-<div id="search-results">
-    <div v-for="property in properties">
-        <property-preview></property-preview>
+    @verbatim
+    <div id="search-results">
+        <div class="row">
+            <property-preview v-for="property in properties" :property="property"></property-preview>
+        </div>
+        <search-paginator></search-paginator>
     </div>
-</div>
-<div>
-    {{ $properties->links() }}
-</div>
+    @endverbatim
 @endsection
 @push('vars')
 <script>
