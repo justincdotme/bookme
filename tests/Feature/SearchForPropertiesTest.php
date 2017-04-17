@@ -70,4 +70,16 @@ class SearchForPropertiesTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewHas('properties');
     }
+
+    /**
+     * @test
+     */
+    public function page_contains_featured_properties()
+    {
+        $response = $this->get('/properties/search');
+
+        $response->assertStatus(200);
+
+        $response->assertViewHas('states');
+    }
 }

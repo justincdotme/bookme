@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Core\Payment\PaymentGatewayInterface;
 use App\Core\Payment\StripePaymentGateway;
+use App\Http\Composers\StateListComposer;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Dusk\DuskServiceProvider;
 
@@ -42,8 +43,15 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(DuskServiceProvider::class);
         }
 
+        //Register Laravel Debug Bar
         if ($this->app->environment('local')) {
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
+
+        //Send the State list for use in searches
+        view()->composer([
+            'public.home',
+            'public.properties.search'
+        ], StateListComposer::class);
     }
 }

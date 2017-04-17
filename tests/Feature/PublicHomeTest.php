@@ -32,4 +32,16 @@ class PublicHomeTest extends TestCase
 
         $response->assertViewHas('featuredProperties');
     }
+
+    /**
+     * @test
+     */
+    public function homepage_contains_list_of_states_for_search()
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+
+        $response->assertViewHas('states');
+    }
 }
