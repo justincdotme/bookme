@@ -7,3 +7,8 @@
         </div>
     </div>
 @endsection
+@push('vars')
+<script>
+    window.states = {!! json_encode($states) !!}
+</script>
+@endpush

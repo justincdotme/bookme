@@ -4,7 +4,16 @@
     @verbatim
     <div id="search-results">
         <div class="row">
-            <property-preview v-for="property in properties" :property="property"></property-preview>
+            <div class="col-xs-6 col-xs-offset-3">
+                <search-widget>
+                    <h1 slot="header">Search for Properties</h1>
+                </search-widget>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <property-preview v-for="property in properties" :property="property"></property-preview>
+            </div>
         </div>
         <search-paginator></search-paginator>
     </div>
@@ -13,6 +22,7 @@
 @push('vars')
 <script>
     window.results = {!! json_encode($properties) !!};
+    window.states = {!! json_encode($states) !!}
 </script>
 @endpush
 @push('scripts')

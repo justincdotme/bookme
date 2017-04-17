@@ -7,6 +7,7 @@ import State from './State';
 //Components
 import PropertyPreview from './components/property-preview.vue';
 import SearchPaginator from './components/search-paginator.vue';
+import SearchWidget from './components/search-widget.vue';
 
 //Init
 window.bookMe = {
@@ -25,13 +26,14 @@ window.bookMe.searchResultsPage = new Vue({
     },
     components: {
         PropertyPreview,
-        SearchPaginator
+        SearchPaginator,
+        SearchWidget
     },
     mounted() {
         this.updateResults(window.results);
         window.bookMe.Event.listen('search-prev', () => this.paginatePrev());
         window.bookMe.Event.listen('search-next', () => this.paginateNext());
-        //TODO - Event listener for search. Call the search method
+        window.bookMe.Event.listen('city-state-search', (query) => this.search(query));
     },
     methods: {
         getSearchParams() {
@@ -65,7 +67,6 @@ window.bookMe.searchResultsPage = new Vue({
             this.fetchProperties(this.results.nextPageUrl);
         },
         search(query) {
-            //This will be called when the search button is clicked.
             //TODO - Convert query to URL
 
         },
