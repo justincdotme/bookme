@@ -15,3 +15,6 @@
     window.results = {!! json_encode($properties) !!};
 </script>
 @endpush
+@push('scripts')
+<script src="{{ mix('/js/search.js') }}"></script>
+@endpush
