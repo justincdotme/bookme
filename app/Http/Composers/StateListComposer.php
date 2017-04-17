@@ -12,7 +12,7 @@ class StateListComposer
     public function compose(View $view)
     {
         return $view->with([
-            'states' => State::pluck('abbreviation')
+            'states' => State::pluck('abbreviation')->prepend('State')
         ]);
     }
 }

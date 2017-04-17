@@ -36,19 +36,6 @@ window.bookMe.searchResultsPage = new Vue({
         window.bookMe.Event.listen('city-state-search', (query) => this.search(query));
     },
     methods: {
-        getSearchParams() {
-            let output = [], query;
-            let queries = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-
-            for(let i=0; i<queries.length; i++)
-            {
-                query = queries[i].split('=');
-                if (query[0] != 'page') {
-                    output[query[0]] = query[1];
-                }
-            }
-            return output;
-        },
         updateList() {
             this.properties = this.getProperties(); //Because I can't make the properties prop reactive for some reason.
             this.results = window.bookMe.stateManager.getSearchResults();
@@ -67,15 +54,18 @@ window.bookMe.searchResultsPage = new Vue({
             this.fetchProperties(this.results.nextPageUrl);
         },
         search(query) {
-            //TODO - Convert query to URL
-
+            let queryUrl = '/properties/search?searchType=city-state&city=';
+            queryUrl += query.city;
+            queryUrl += '&state=';
+            queryUrl += query.state;
+            this.fetchProperties(queryUrl);
         },
         fetchProperties(url) {
-            //TODO - Implement actual search query
             window.axios.get(url, {}).then((response) => {
                 this.updateResults(response.data.properties);
                 history.pushState({last: "search"}, "bookMe - Search Results", url)
             }).catch((error) => {
+                //TODO - Error hanling
                 //TODO - Check for valiation error, fire window.bookMe.Event.fire('validation-error', {city: ['foo', 'bar'], state: ['baz']})
             });
         }
