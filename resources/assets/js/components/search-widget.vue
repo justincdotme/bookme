@@ -5,33 +5,35 @@
                 <slot name="header"></slot>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-6 text-center">
-                <span class="error-message">{{ cityMessage }}</span>
-            </div>
-            <div class="col-xs-6 text-center">
-                <span v-if="stateValidationError" class="error-message">{{ stateMessage }}</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-6 text-right">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="city" v-model="city" placeholder="city" :class="{error: cityValidationError}">
+        <form @submit.prevent.stop="search">
+            <div class="row">
+                <div class="col-xs-6 text-center">
+                    <span v-show="errors.has('city')" class="error-message">{{ errors.first('city') }}</span>
+                </div>
+                <div class="col-xs-6 text-center">
+                    <span v-show="errors.has('state')" class="error-message">{{ errors.first('state') }}</span>
                 </div>
             </div>
-            <div class="col-xs-6">
-                <div class="form-group">
-                    <select class="form-control" name="state" v-model="state" :class="{error: stateValidationError}">
-                        <option v-for="(state, index) in stateList" :value="(index)">{{ state }}</option>
-                    </select>
+            <div class="row">
+                <div class="col-xs-6 text-right">
+                    <div class="form-group">
+                        <input :class="{'form-control': true, 'error': errors.has('city') }" v-validate type="text" name="city" data-vv-rules="required" v-model="city" placeholder="city" >
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <select :class="{'form-control': true, 'error': errors.has('state') }" name="state" v-model="state" v-validate data-vv-rules="min_value:1">
+                            <option v-for="(state, index) in stateList" :value="(index)">{{ state }}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 text-center">
-                <button type="button" class="btn btn-default" @click="search">Search</button>
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <button type="submit" class="btn btn-default">Search</button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </template>
 
@@ -71,38 +73,22 @@
         },
         methods: {
             search() {
-                this.cityValidationError = false;
-                this.stateValidationError = false;
-                this.cityMessage = "";
-                this.stateMessage = "";
-
-                //TODO - Refactor into validate method
-                if ("" == this.city) {
-                    this.cityValidationError = true;
-                    this.cityMessage = "Please enter a city.";
-                    return false;
-                }
-                if (0 == this.state) {
-                    this.stateValidationError = true;
-                    this.stateMessage = "Please select a state.";
-                    return false;
-                }
-
-                window.bookMe.Event.fire('city-state-search', {city: this.city, state: this.state})
+                this.$validator.validateAll().then(() => {
+                    if (!this.$validator.errorBag.errors.length) {
+                        window.bookMe.Event.fire('city-state-search', {city: this.city, state: this.state});
+                    }
+                }).catch((e) => {
+                    console.log(e);
+                });
             }
         },
         data() {
             return {
-                city: null,
-                state: null,
+                city: "",
+                state: 0,
                 type: null,
                 stateList: window.states,
-
-                //TODO - Refactor validation handling
-                cityValidationError: false,
-                cityMessage: "",
-                stateValidationError: false,
-                stateMessage: ""
+                email: ""
             }
         }
     }

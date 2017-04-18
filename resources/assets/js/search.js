@@ -8,7 +8,20 @@ import State from './State';
 import PropertyPreview from './components/property-preview.vue';
 import SearchPaginator from './components/search-paginator.vue';
 import SearchWidget from './components/search-widget.vue';
+import VeeValidate from 'vee-validate';
+import { Validator } from 'vee-validate';
 
+const dictionary = {
+    en: {
+        messages:{
+            min_value: () => 'Please select a state'
+        }
+    }
+};
+
+Validator.updateDictionary(dictionary);
+
+window.Vue.use(VeeValidate);
 //Init
 window.bookMe = {
     Event: new Event,
@@ -37,7 +50,7 @@ window.bookMe.searchResultsPage = new Vue({
     },
     methods: {
         updateList() {
-            this.properties = this.getProperties(); //Because I can't make the properties prop reactive for some reason.
+            this.properties = this.getProperties();
             this.results = window.bookMe.stateManager.getSearchResults();
         },
         getProperties() {
@@ -65,7 +78,7 @@ window.bookMe.searchResultsPage = new Vue({
                 this.updateResults(response.data.properties);
                 history.pushState({last: "search"}, "bookMe - Search Results", url)
             }).catch((error) => {
-                //TODO - Error hanling
+                //TODO - Error handling
                 //TODO - Check for valiation error, fire window.bookMe.Event.fire('validation-error', {city: ['foo', 'bar'], state: ['baz']})
             });
         }
