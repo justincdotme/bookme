@@ -11,22 +11,19 @@ import SearchWidget from './components/search-widget.vue';
 import VeeValidate from 'vee-validate';
 import { Validator } from 'vee-validate';
 
-const dictionary = {
-    en: {
-        messages:{
-            min_value: () => 'Please select a state'
-        }
-    }
-};
-
-Validator.updateDictionary(dictionary);
-
-window.Vue.use(VeeValidate);
 //Init
 window.bookMe = {
     Event: new Event,
     stateManager: new State
 };
+Validator.updateDictionary({
+    en: {
+        messages:{
+            min_value: () => 'Please select a state'
+        }
+    }
+});
+window.Vue.use(VeeValidate);
 window.bookMe.stateManager.init();
 
 //Search Results
