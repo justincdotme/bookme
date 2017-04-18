@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <select :class="{'form-control': true, 'error': errors.has('state') }" name="state" v-model="state" v-validate data-vv-rules="min_value:1">
+                        <select :class="{'form-control': true, 'error': errors.has('state') }" v-model="state" name="state" v-validate.initial="state" data-vv-rules="min_value:1" >
                             <option v-for="(state, index) in stateList" :value="(index)">{{ state }}</option>
                         </select>
                     </div>
