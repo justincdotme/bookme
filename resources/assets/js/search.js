@@ -1,9 +1,5 @@
 require('./bootstrap');
 
-//Classes
-import Event from './Event';
-import State from './State';
-
 //Components
 import PropertyPreview from './components/property-preview.vue';
 import SearchPaginator from './components/search-paginator.vue';
@@ -11,11 +7,6 @@ import SearchWidget from './components/search-widget.vue';
 import VeeValidate from 'vee-validate';
 import { Validator } from 'vee-validate';
 
-//Init
-window.bookMe = {
-    Event: new Event,
-    stateManager: new State
-};
 Validator.updateDictionary({
     en: {
         messages:{
