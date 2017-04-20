@@ -56,20 +56,7 @@
     export default {
         props: [],
         mounted() {
-            let searchTerms = [], query;
-            let queries = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-            for(let i=0; i<queries.length; i++) {
-                query = queries[i].split('=');
-                if (query[0] != 'page') {
-                    searchTerms[query[0]] = query[1];
-                }
-            }
-            if ("city" in searchTerms && "state" in searchTerms) {
-                this.city = searchTerms["city"];
-                this.state = searchTerms["state"];
-            } else {
-                this.state = 0; //Preselect "State" from select
-            }
+            this.parseUrlParams();
         },
         methods: {
             search() {
@@ -78,8 +65,25 @@
                         window.bookMe.Event.fire('city-state-search', {city: this.city, state: this.state});
                     }
                 }).catch((e) => {
+                    //TODO - Figure out what to do here.
                     console.log(e);
                 });
+            },
+            parseUrlParams() {
+                let searchTerms = [], query;
+                let queries = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for(let i=0; i<queries.length; i++) {
+                    query = queries[i].split('=');
+                    if (query[0] != 'page') {
+                        searchTerms[query[0]] = query[1];
+                    }
+                }
+                if ("city" in searchTerms && "state" in searchTerms) {
+                    this.city = searchTerms["city"];
+                    this.state = searchTerms["state"];
+                } else {
+                    this.state = 0; //Preselect "State" from select
+                }
             }
         },
         data() {
