@@ -16,11 +16,15 @@ class StateTest extends TestCase
      */
     public function it_can_generate_list_of_states()
     {
-        $state = new State();
-        $this->artisan('db:seed');
+        factory(State::class)->create([
+            'abbreviation' => 'WA'
+        ]);
+        factory(State::class)->create([
+            'abbreviation' => 'OR'
+        ]);
 
-        $list = $state->getList();
+        $list = (new State())->getList();
 
-        $this->assertCount(51, $list);
+        $this->assertCount(2, $list);
     }
 }
