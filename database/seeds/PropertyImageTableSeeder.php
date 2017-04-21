@@ -12,15 +12,14 @@ class PropertyImageTableSeeder extends Seeder
      */
     public function run()
     {
-        for($i=1; $i<=285; $i++) { // 285 test properties
-            for ($ii=1; $ii<= 6; $i++) { //6 test images total
+        foreach (range(1, 285) as $i) {
+            foreach (range(1, 6) as $ii) {
                 PropertyImage::create([
                     'property_id' => $i,
                     'thumb_path' => "/images/temp-homes/home-{$ii}.jpg",
                     'full_path' => "/images/temp-homes/home-{$ii}.jpg"
                 ]);
             }
-
         }
     }
 }
