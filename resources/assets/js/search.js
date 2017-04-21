@@ -67,7 +67,7 @@ window.bookMe.searchResultsPage = new Vue({
                 history.pushState({last: "search"}, "bookMe - Search Results", url)
             }).catch((error) => {
                 //TODO - Error handling
-                //TODO - Check for valiation error, fire window.bookMe.Event.fire('validation-error', {city: ['foo', 'bar'], state: ['baz']})
+                //TODO - Check for validation error, fire window.bookMe.Event.fire('validation-error', {city: ['foo', 'bar'], state: ['baz']})
             });
         }
     }
