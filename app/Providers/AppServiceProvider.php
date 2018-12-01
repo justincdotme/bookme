@@ -43,11 +43,6 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(DuskServiceProvider::class);
         }
 
-        //Register Laravel Debug Bar
-        if ($this->app->environment('local')) {
-            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
-        }
-
         //Send the State list for use in searches
         view()->composer([
             'public.home',
