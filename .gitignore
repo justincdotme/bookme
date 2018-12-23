@@ -1,9 +1,9 @@
 /node_modules
 /public/storage
 /public/hot
-/public/css/
-/public/fonts/
-/public/js/
+/public/css
+/public/fonts
+/public/js
 /public/images/licensed
 /storage/*.key
 /vendor
@@ -11,6 +11,7 @@
 Homestead.json
 Homestead.yaml
 .env
+.env.testing
 .env.dusk.local
 _ide_helper.php
 storage/tmp/
