@@ -41,7 +41,7 @@
         },
         data() {
             return {
-                errors: {}
+                //errors: {}
             }
         }
     }

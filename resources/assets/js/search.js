@@ -7,13 +7,15 @@ import SearchWidget from './components/search-widget.vue';
 import VeeValidate from 'vee-validate';
 import { Validator } from 'vee-validate';
 
-Validator.updateDictionary({
-    en: {
-        messages:{
-            min_value: () => 'Please select a state'
+const dictionary = {
+    custom : {
+        state: {
+            excluded:  () =>"Please select a state."
         }
     }
-});
+};
+Validator.localize('en', dictionary);
+
 window.Vue.use(VeeValidate);
 window.bookMe.stateManager.init();
 

@@ -17,12 +17,12 @@
             <div class="row">
                 <div class="col-xs-6 text-right">
                     <div class="form-group">
-                        <input :class="{'form-control': true, 'error': errors.has('city') }" v-validate type="text" name="city" data-vv-rules="required" v-model="city" placeholder="city" >
+                        <input :class="{'form-control': true, 'error': errors.has('city') }" v-validate="'required'" type="text" name="city" v-model="city" placeholder="city" >
                     </div>
                 </div>
                 <div class="col-xs-6">
                     <div class="form-group">
-                        <select :class="{'form-control': true, 'error': errors.has('state') }" v-model="state" name="state" v-validate.initial="state" data-vv-rules="min_value:1" >
+                        <select :class="{'form-control': true, 'error': errors.has('state') }" v-model="state" name="state" v-validate="'excluded:0'" data-vv-as="selected" >
                             <option v-for="(state, index) in stateList" :value="(index)">{{ state }}</option>
                         </select>
                     </div>
@@ -60,8 +60,8 @@
         },
         methods: {
             search() {
-                this.$validator.validateAll().then(() => {
-                    if (!this.$validator.errorBag.errors.length) {
+                this.$validator.validateAll().then(result => {
+                    if (result) {
                         window.bookMe.Event.fire('city-state-search', {city: this.city, state: this.state});
                     }
                 }).catch((e) => {
