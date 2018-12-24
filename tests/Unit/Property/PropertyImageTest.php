@@ -27,7 +27,7 @@ class PropertyImageTest extends TestCase
     /**
      * @test
      */
-    public function it_generates_cropped_and_resized_image()
+    public function it_generates_thumbnail_image()
     {
         $this->property = factory(Property::class)->create();
         $propertyImage = factory(PropertyImage::class)->create([
@@ -45,7 +45,7 @@ class PropertyImageTest extends TestCase
     /**
      * @test
      */
-    public function it_generates_thumbnail_image()
+    public function it_generates_cropped_and_resized_image()
     {
         $this->property = factory(Property::class)->create();
         $propertyImage = factory(PropertyImage::class)->create([
