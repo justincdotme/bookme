@@ -29,11 +29,12 @@
 <script>
     export default {
         props: [
-            'property',
-            'images'
+            'property'
         ],
-        mounted() {
-            this.images = this.property.images;
+        computed: {
+            images() {
+                return this.property.images
+            }
         },
         methods: {},
         data() {
