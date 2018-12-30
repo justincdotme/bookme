@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use Illuminate\Database\Seeder;
 
@@ -11,6 +11,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
+        $this->call([
+            StatesTableSeeder::class,
+            PropertiesTableSeeder::class,
+            PropertyImageTableSeeder::class,
+            RolesTableSeeder::class,
+            UsersTableSeeder::class
+        ]);
     }
 }
