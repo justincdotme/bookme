@@ -43,7 +43,7 @@ class UserController extends Controller
             'phone' => request('phone')
         ]);
 
-        Mail::to($user->email)->send(new UserRegistrationConfirmation($user, config('mail')));
+        Mail::to($user->email)->send(new UserRegistrationConfirmation($user));
 
         return redirect()->route('login');
     }

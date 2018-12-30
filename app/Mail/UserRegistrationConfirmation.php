@@ -11,17 +11,14 @@ class UserRegistrationConfirmation extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
-    protected $config;
 
     /**
      * Create a new message instance.
      *
-     * @return void
      */
-    public function __construct($user, $config)
+    public function __construct($user)
     {
         $this->user = $user;
-        $this->config = $config;
     }
 
     /**
