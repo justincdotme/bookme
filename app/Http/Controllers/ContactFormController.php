@@ -32,8 +32,11 @@ class ContactFormController extends Controller
             'message' => 'required'
         ]);
 
-        Mail::send(new ContactFormSubmission(request()->all(), config('mail')));
-        Mail::send(new ContactFormConfirmation(request()->all(), config('mail')));
+        Mail::to(config('mail.accounts.admin.to'))
+            ->send(new ContactFormSubmission(request()->all()));
+
+        Mail::to(request('email'))
+            ->send(new ContactFormConfirmation(request()->all()));
 
         session()->put('submittedContact', 1);
 
