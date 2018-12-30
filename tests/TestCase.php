@@ -114,4 +114,21 @@ abstract class TestCase extends BaseTestCase
 
         return $tmpPath;
     }
+
+
+    /**
+     * Render the contents of a mailable.
+     * Allows us to run assertions against it's contents.
+     *
+     * @param $mailable
+     * @return string
+     */
+    protected function renderMailable($mailable)
+    {
+        $mailable->build();
+        return view(
+            $mailable->view,
+            $mailable->buildViewData()
+        )->render();
+    }
 }
