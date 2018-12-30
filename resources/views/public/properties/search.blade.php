@@ -12,7 +12,9 @@
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <property-preview v-for="property in properties" :property="property"></property-preview>
+                <div class="row" v-for="i in Math.ceil(properties.length / 3)">
+                    <property-preview v-for="property in properties.slice((i - 1) * 3, i * 3)" :property="property"></property-preview>
+                </div>
             </div>
         </div>
         <search-paginator></search-paginator>

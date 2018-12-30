@@ -22,7 +22,7 @@
         border-radius: 0;
         border: 1px solid $med-blue;
         margin: 1em auto;
-        height: 250px;
+        padding: 1em;
     }
 </style>
 
