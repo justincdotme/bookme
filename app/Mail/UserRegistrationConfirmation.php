@@ -6,11 +6,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserRegistration extends Mailable
+class UserRegistrationConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $user;
+    public $user;
     protected $config;
 
     /**
@@ -31,12 +31,7 @@ class UserRegistration extends Mailable
      */
     public function build()
     {
-        return $this->to($this->user)
-            ->from([
-            'address' => $this->config['from']['address'],
-            'name' => $this->config['from']['name']
-        ])
-        ->view('email.registration')
+        return $this->view('email.registration')
         ->with([
             'user' => $this->user
         ]);

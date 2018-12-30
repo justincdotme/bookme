@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Phone;
 use App\Core\User;
-use App\Mail\UserRegistration;
+use App\Mail\UserRegistrationConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
@@ -43,7 +43,7 @@ class UserController extends Controller
             'phone' => request('phone')
         ]);
 
-        Mail::send(new UserRegistration($user, config('mail')));
+        Mail::to($user->email)->send(new UserRegistrationConfirmation($user, config('mail')));
 
         return redirect()->route('login');
     }

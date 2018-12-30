@@ -3,26 +3,14 @@
 namespace Tests\Feature;
 
 use App\Core\User;
-use EmailTestHelpers;
+use App\Mail\UserRegistrationConfirmation;
 use Illuminate\Support\Facades\Mail;
-use TestingMailEventListener;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class RegisterUsersTest extends TestCase
 {
     use DatabaseMigrations;
-    use EmailTestHelpers;
-
-
-    public function setUp($name = null, array $data = [], $dataName = '')
-    {
-        parent::setUp($name, $data, $dataName);
-        Mail::getSwiftMailer()
-            ->registerPlugin(new TestingMailEventListener($this));
-    }
 
     /**
      * @test
@@ -196,6 +184,8 @@ class RegisterUsersTest extends TestCase
      */
     public function it_sends_welcome_email_to_new_users()
     {
+        //TODO - Queue the email
+        Mail::fake();
         $this->registerUser([
             'phone' => 1231231231,
             'first_name' => 'Test',
@@ -205,11 +195,9 @@ class RegisterUsersTest extends TestCase
             'password_confirmation' => 'abc123'
         ]);
 
-        $this->seeEmailWasSent();
-        $this->seeEmailsSent(1);
-        $this->seeEmailTo('test.user@justinc.me');
-        $this->seeEmailFrom('no-reply@bookme.justinc.me');
-        $this->seeEmailContains("Welcome, Test User");
+        Mail::assertSent(UserRegistrationConfirmation::class, function ($mail) {
+            return $mail->hasTo('test.user@justinc.me');
+        });
     }
 
     /**
