@@ -2,7 +2,7 @@
 
 $factory->define(App\Core\Property\Property::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
+        'name' => ucwords($faker->word),
         'rate' => $faker->randomNumber(),
         'short_description' => $faker->words(3, true),
         'long_description' => $faker->sentences(3, true),
