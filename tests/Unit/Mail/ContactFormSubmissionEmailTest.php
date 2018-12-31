@@ -22,10 +22,10 @@ class ContactFormSubmissionEmailTest extends TestCase
 
         $rendered = $this->renderMailable($email);
 
-        $this->assertContains('<h1>Contact Request From Foo McBar</h1>', $rendered);
-        $this->assertContains('<strong>Email: </strong>foo@bar.baz', $rendered);
-        $this->assertContains('<strong>Phone: </strong>123-456-7890', $rendered);
-        $this->assertContains('<strong>Message: </strong>This is just a test.', $rendered);
+        $this->assertContains($formData['name'], $rendered);
+        $this->assertContains($formData['email'], $rendered);
+        $this->assertContains($formData['phone'], $rendered);
+        $this->assertContains($formData['message'], $rendered);
     }
 
     /**

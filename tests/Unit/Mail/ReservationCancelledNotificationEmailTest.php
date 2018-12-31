@@ -27,10 +27,8 @@ class ReservationCancelledNotificationEmailTest extends TestCase
         $rendered = $this->renderMailable($email);
 
         $this->assertContains('<h1>Reservation Cancellation</h1>', $rendered);
-        $this->assertContains(
-            "<h2>{$user->email} has cancelled reservation #{$reservation->id}</h2>",
-            $rendered
-        );
+        $this->assertContains($user->email, $rendered);
+        $this->assertContains((string)$reservation->id, $rendered);
     }
 
     /**

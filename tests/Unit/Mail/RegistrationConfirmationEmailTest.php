@@ -21,7 +21,8 @@ class RegistrationConfirmationEmailTest extends TestCase
         $email = new UserRegistrationConfirmation($user);
         $rendered = $this->renderMailable($email);
 
-        $this->assertContains('<h1>Welcome, Test User</h1>', $rendered);
+        $this->assertContains($user->first_name, $rendered);
+        $this->assertContains($user->last_name, $rendered);
     }
 
     /**

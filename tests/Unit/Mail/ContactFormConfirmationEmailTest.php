@@ -22,7 +22,7 @@ class ContactFormConfirmationEmailTest extends TestCase
 
         $rendered = $this->renderMailable($email);
 
-        $this->assertContains('<h1>Thank You, Foo McBar</h1>', $rendered);
+        $this->assertContains($formData['name'], $rendered);
     }
 
     /**
