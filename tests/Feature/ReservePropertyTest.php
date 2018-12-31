@@ -25,6 +25,7 @@ class ReservePropertyTest extends TestCase
     public function setUp($name = null, array $data = [], $dataName = '')
     {
         parent::setUp($name, $data, $dataName);
+        Mail::fake();
         $this->app->instance(PaymentGatewayInterface::class, new TestPaymentGateway());
         $this->paymentGateway = app()->make(PaymentGatewayInterface::class);
     }
@@ -78,6 +79,9 @@ class ReservePropertyTest extends TestCase
         $reservation = $this->property->reservations()->first();
 
         $this->response->assertStatus(201);
+        Mail::assertQueued(ReservationComplete::class, function ($mail) {
+            return $mail->hasTo('foo@bar.com');
+        });
         $this->assertEquals(350000, $this->paymentGateway->getTotalCharges());
         $this->assertEquals(350000, $reservation->amount);
         $this->assertEquals('foo@bar.com', $reservation->user->email);
@@ -99,47 +103,11 @@ class ReservePropertyTest extends TestCase
             'zip' => 12345
         ], $useUnauthenticatedUser);
 
+        Mail::assertNotQueued(ReservationComplete::class);
         $this->response->assertStatus(401);
         $this->assertCount(0, $this->property->reservations()->get());
         $this->assertEquals(0, $this->paymentGateway->getTotalCharges());
     }
-
-    /**
-     * @test
-     */
-    public function it_sends_a_confirmation_email_for_successful_reservation()
-    {
-        //TODO - Email Queue test
-        Mail::fake();
-        $this->user = factory(User::class)->states(['standard'])->make([
-            'id' => 1,
-            'email' => 'foo@fighter.com'
-        ]);
-        $this->property = factory(Property::class)->make();
-        $state = factory(State::class)->create([
-            'abbreviation' => 'WA'
-        ]);
-        $this->property->state()->associate($state);
-        $this->property->save();
-        $dateStart = Carbon::now();
-        $dateEnd = Carbon::parse('+1 week');
-
-        $this->response = $this->reserveProperty([
-            'date_start' => $dateStart->toDateString(),
-            'date_end' => $dateEnd->toDateString(),
-            'payment_token' => $this->paymentGateway->getValidTestToken(),
-            'line1' => '123 Foo St',
-            'city' => 'Fooville',
-            'state_id' => 1,
-            'zip' => 12345
-        ]);
-
-        Mail::assertSent(ReservationComplete::class, function ($mail) {
-            return $mail->hasTo('foo@fighter.com');
-        });
-    }
-
-
 
     /**
      * @test

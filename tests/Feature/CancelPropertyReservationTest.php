@@ -19,6 +19,7 @@ class CancelPropertyReservationTest extends TestCase
      */
     public function authenticated_user_can_cancel_their_own_reservation()
     {
+        Mail::fake();
         $this->makeReservation();
 
         $response = $this->actingAs($this->user)->put(
@@ -27,6 +28,9 @@ class CancelPropertyReservationTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        Mail::assertQueued(ReservationCancelled::class, function ($mail) {
+            return $mail->hasTo(config('mail.accounts.admin.to'));
+        });
     }
 
     /**
@@ -34,6 +38,7 @@ class CancelPropertyReservationTest extends TestCase
      */
     public function user_cannot_cancel_other_users_resrvation()
     {
+        Mail::fake();
         $user = factory(User::class)->states(['standard'])->create([
             'id' => 2
         ]);
@@ -47,26 +52,8 @@ class CancelPropertyReservationTest extends TestCase
                 'status' => 'cancelled'
             ]);
 
+        Mail::assertNotQueued(ReservationCancelled::class);
         $response->assertStatus(403);
-    }
-
-    /**
-     * @test
-     */
-    public function it_sends_a_cancellation_notice_to_admin()
-    {
-        Mail::fake();
-        $this->makeReservation();
-
-        $response = $this->actingAs($this->user)->put(
-            "/properties/{$this->property->id}/reservations/{$this->reservation->id}", [
-            'status' => 'cancelled'
-        ]);
-
-        Mail::assertSent(ReservationCancelled::class, function ($mail) {
-            return $mail->hasTo(config('mail.accounts.admin.to'));
-        });
-        $response->assertStatus(200);
     }
 
     /**

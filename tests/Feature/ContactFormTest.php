@@ -48,7 +48,6 @@ class ContactFormTest extends TestCase
      */
     public function contact_form_submission_sends_notification_email_to_admin()
     {
-        //TODO - Email Queue test
         $this->submit_contact_form([
             'name' => 'foo bar baz',
             'email' => 'foo@bar.baz',
@@ -56,7 +55,7 @@ class ContactFormTest extends TestCase
             'message' => 'This is a test message.'
         ]);
 
-        Mail::assertSent(ContactFormSubmission::class, function ($mail) {
+        Mail::assertQueued(ContactFormSubmission::class, function ($mail) {
             return $mail->hasTo(config('mail.accounts.admin.to'));
         });
     }
@@ -66,7 +65,6 @@ class ContactFormTest extends TestCase
      */
     public function contact_form_submission_sends_confirmation_email_to_user()
     {
-        //TODO - Email Queue test
         $this->submit_contact_form([
             'name' => 'foo bar baz',
             'email' => 'foo@bar.baz',
@@ -74,7 +72,7 @@ class ContactFormTest extends TestCase
             'message' => 'This is a test message.'
         ]);
 
-        Mail::assertSent(ContactFormConfirmation::class, function ($mail) {
+        Mail::assertQueued(ContactFormConfirmation::class, function ($mail) {
             return $mail->hasTo('foo@bar.baz');
         });
     }

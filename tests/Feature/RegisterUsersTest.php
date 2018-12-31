@@ -39,6 +39,7 @@ class RegisterUsersTest extends TestCase
      */
     public function registered_users_cannot_create_registered_users()
     {
+        Mail::fake();
         $user = factory(User::class)->states(['standard'])->create();
 
         $response = $this->actingAs($user)->post('/register', [
@@ -48,6 +49,7 @@ class RegisterUsersTest extends TestCase
             'password' => 'abc123',
         ]);
 
+        Mail::assertNotQueued(UserRegistrationConfirmation::class);
         $response->assertStatus(302);
         $response->assertRedirect('/');
     }
@@ -184,7 +186,6 @@ class RegisterUsersTest extends TestCase
      */
     public function it_sends_welcome_email_to_new_users()
     {
-        //TODO - Queue the email
         Mail::fake();
         $this->registerUser([
             'phone' => 1231231231,
@@ -195,7 +196,7 @@ class RegisterUsersTest extends TestCase
             'password_confirmation' => 'abc123'
         ]);
 
-        Mail::assertSent(UserRegistrationConfirmation::class, function ($mail) {
+        Mail::assertQueued(UserRegistrationConfirmation::class, function ($mail) {
             return $mail->hasTo('test.user@justinc.me');
         });
     }
