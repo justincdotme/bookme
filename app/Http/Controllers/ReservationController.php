@@ -57,7 +57,7 @@ class ReservationController extends Controller
                 ])
             );
             $confirmation = $reservation->complete($paymentGateway, request('payment_token'), $billingAddress);
-            Mail::send(new ReservationComplete($user, $confirmation, config('mail')));
+            Mail::to($user->email)->send(new ReservationComplete($user, $confirmation));
             return response()->json([
                 'status' => 'success',
                 'reservation' => $confirmation

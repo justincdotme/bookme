@@ -8,19 +8,15 @@ use App\Core\Property\Property;
 use App\Core\Reservation;
 use App\Core\State;
 use App\Core\User;
+use App\Mail\ReservationComplete;
 use Carbon\Carbon;
-use EmailTestHelpers;
 use Illuminate\Support\Facades\Mail;
-use TestingMailEventListener;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ReservePropertyTest extends TestCase
 {
     use DatabaseMigrations;
-    use EmailTestHelpers;
 
     protected $paymentGateway;
     protected $property;
@@ -31,8 +27,6 @@ class ReservePropertyTest extends TestCase
         parent::setUp($name, $data, $dataName);
         $this->app->instance(PaymentGatewayInterface::class, new TestPaymentGateway());
         $this->paymentGateway = app()->make(PaymentGatewayInterface::class);
-        Mail::getSwiftMailer()
-            ->registerPlugin(new TestingMailEventListener($this));
     }
 
     /**
@@ -115,6 +109,8 @@ class ReservePropertyTest extends TestCase
      */
     public function it_sends_a_confirmation_email_for_successful_reservation()
     {
+        //TODO - Email Queue test
+        Mail::fake();
         $this->user = factory(User::class)->states(['standard'])->make([
             'id' => 1,
             'email' => 'foo@fighter.com'
@@ -138,18 +134,9 @@ class ReservePropertyTest extends TestCase
             'zip' => 12345
         ]);
 
-        $userName = e($this->user->name);
-        $this->seeEmailWasSent();
-        $this->seeEmailsSent(1);
-        $this->seeEmailTo($this->user->email);
-        $this->seeEmailFrom('no-reply@bookme.justinc.me');
-        $this->seeEmailContains("Thank you for your reservation, {$userName}");
-        $this->seeEmailContains("Check In: {$dateStart->toFormattedDateString()}");
-        $this->seeEmailContains("Check Out: {$dateEnd->toFormattedDateString()}");
-        $this->seeEmailContains("Length of Stay: 7 days.");
-        $this->seeEmailContains("Reservation Number: 1");
-        $this->seeEmailContains("Name: {$this->property->name}");
-        $this->seeEmailContains("Address: " . nl2br($this->property->formatted_address));
+        Mail::assertSent(ReservationComplete::class, function ($mail) {
+            return $mail->hasTo('foo@fighter.com');
+        });
     }
 
 

@@ -12,20 +12,17 @@ class ReservationComplete extends Mailable
 
     protected $user;
     protected $reservation;
-    protected $config;
 
     /**
      * Create a new message instance.
      *
      * @param $user
      * @param $reservation
-     * @param $config
      */
-    public function __construct($user, $reservation, $config)
+    public function __construct($user, $reservation)
     {
         $this->user = $user;
         $this->reservation = $reservation;
-        $this->config = $config;
     }
 
     /**
@@ -35,13 +32,9 @@ class ReservationComplete extends Mailable
      */
     public function build()
     {
-        return $this->to($this->user)
-            ->from([
-                'address' => $this->config['from']['address'],
-                'name' => $this->config['from']['name']
-            ])
-            ->view('email.reservation-confirmation')
-            ->with([
+        return $this
+            ->subject('Reservation Confirmed')
+            ->view('email.reservation-confirmation', [
                 'reservation' => $this->reservation,
                 'user' => $this->user,
                 'property' => $this->reservation->property
