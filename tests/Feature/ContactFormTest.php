@@ -2,24 +2,20 @@
 
 namespace Tests\Feature;
 
+use App\Mail\ContactFormConfirmation;
+use App\Mail\ContactFormSubmission;
 use Tests\TestCase;
-use EmailTestHelpers;
 use Illuminate\Support\Facades\Mail;
-use TestingMailEventListener;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ContactFormTest extends TestCase
 {
     use DatabaseMigrations;
-    use EmailTestHelpers;
 
     public function setUp($name = null, array $data = [], $dataName = '')
     {
         parent::setUp($name, $data, $dataName);
-        Mail::getSwiftMailer()
-            ->registerPlugin(new TestingMailEventListener($this));
+        Mail::fake();
     }
 
     /**
@@ -37,25 +33,48 @@ class ContactFormTest extends TestCase
      */
     public function user_can_submit_contact_form()
     {
-        $response = $this->post("/contact", [
+        $response = $this->submit_contact_form([
             'name' => 'foo bar baz',
             'email' => 'foo@bar.baz',
             'phone' => 1231231231,
             'message' => 'This is a test message.'
         ]);
 
-        $this->seeEmailWasSent();
-        $this->seeEmailsSent(2);
-        $this->seeEmailTo(config('mail.accounts.admin.to'), $this->emails[0]);
-        $this->seeEmailFrom('no-reply@bookme.justinc.me');
-        $this->seeEmailContains("Contact Request From foo bar baz", $this->emails[0]);
-        $this->seeEmailContains("1231231231", $this->emails[0]);
-        $this->seeEmailContains("foo@bar.baz", $this->emails[0]);
-        $this->seeEmailContains("This is a test message.", $this->emails[0]);
-        $this->seeEmailTo("foo@bar.baz", $this->emails[1]);
-        $this->seeEmailFrom('no-reply@bookme.justinc.me', $this->emails[1]);
-        $this->seeEmailContains("Thank You, foo bar baz", $this->emails[1]);
         $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function contact_form_submission_sends_notification_email_to_admin()
+    {
+        $this->submit_contact_form([
+            'name' => 'foo bar baz',
+            'email' => 'foo@bar.baz',
+            'phone' => 1231231231,
+            'message' => 'This is a test message.'
+        ]);
+
+        Mail::assertQueued(ContactFormSubmission::class, function ($mail) {
+            return $mail->hasTo(config('mail.accounts.admin.to'));
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function contact_form_submission_sends_confirmation_email_to_user()
+    {
+        $this->submit_contact_form([
+            'name' => 'foo bar baz',
+            'email' => 'foo@bar.baz',
+            'phone' => 1231231231,
+            'message' => 'This is a test message.'
+        ]);
+
+        Mail::assertQueued(ContactFormConfirmation::class, function ($mail) {
+            return $mail->hasTo('foo@bar.baz');
+        });
     }
 
     /**
@@ -149,5 +168,10 @@ class ContactFormTest extends TestCase
         ]);
 
         $this->assertFieldHasValidationError('message');
+    }
+
+    protected function submit_contact_form(array $data)
+    {
+        return $this->post("/contact", $data);
     }
 }

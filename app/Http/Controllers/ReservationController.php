@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
-
-
     /**
      * @param $property
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -59,7 +57,7 @@ class ReservationController extends Controller
                 ])
             );
             $confirmation = $reservation->complete($paymentGateway, request('payment_token'), $billingAddress);
-            Mail::send(new ReservationComplete($user, $confirmation, config('mail')));
+            Mail::to($user->email)->send(new ReservationComplete($user, $confirmation));
             return response()->json([
                 'status' => 'success',
                 'reservation' => $confirmation
@@ -91,7 +89,8 @@ class ReservationController extends Controller
 
         $user = auth()->user();
 
-        Mail::send(new ReservationCancelled($user, $reservation, config('mail')));
+        Mail::to(config('mail.accounts.admin.to'))
+            ->send(new ReservationCancelled($user, $reservation));
 
         return response()->json([
             'status' => 'success',

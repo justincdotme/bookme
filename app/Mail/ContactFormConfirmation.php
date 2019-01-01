@@ -3,24 +3,23 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ContactFormConfirmation extends Mailable
+class ContactFormConfirmation extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     protected $formData;
-    protected $config;
 
     /**
      * Create a new message instance.
      *
      */
-    public function __construct($formData, $config)
+    public function __construct($formData)
     {
         $this->formData = $formData;
-        $this->config = $config;
     }
 
     /**
@@ -30,15 +29,9 @@ class ContactFormConfirmation extends Mailable
      */
     public function build()
     {
-        return $this->to($this->formData['email'])
-            ->from([
-                'address' => $this->config['from']['address'],
-                'name' => $this->config['from']['name']
-            ])
-            ->replyTo($this->config['accounts']['admin']['to'])
-            ->view('email.contact-form-confirmation')
-            ->with([
-                'data' => $this->formData,
-            ]);
+        return $this->subject('Thank you, we will be in touch')
+            ->view('email.contact-form-confirmation', [
+            'data' => $this->formData,
+        ]);
     }
 }

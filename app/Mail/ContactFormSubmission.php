@@ -3,24 +3,23 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ContactFormSubmission extends Mailable
+class ContactFormSubmission extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     protected $formData;
-    protected $config;
 
     /**
      * Create a new message instance.
      *
      */
-    public function __construct($formData, $config)
+    public function __construct($formData)
     {
         $this->formData = $formData;
-        $this->config = $config;
     }
 
     /**
@@ -30,14 +29,9 @@ class ContactFormSubmission extends Mailable
      */
     public function build()
     {
-        return $this->to($this->config['accounts']['admin']['to'])
-            ->from([
-                'address' => $this->config['from']['address'],
-                'name' => $this->config['from']['name']
-            ])
+        return $this->subject('New Contact Request')
             ->replyTo($this->formData['email'])
-            ->view('email.contact-form-submission')
-            ->with([
+            ->view('email.contact-form-submission', [
                 'data' => $this->formData,
             ]);
     }

@@ -3,26 +3,15 @@
 namespace Tests\Feature;
 
 use App\Core\User;
-use EmailTestHelpers;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use TestingMailEventListener;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PasswordResetTest extends TestCase
 {
     use DatabaseMigrations;
-    use EmailTestHelpers;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        Mail::getSwiftMailer()
-            ->registerPlugin(new TestingMailEventListener($this));
-    }
 
     /**
      * @test
@@ -39,6 +28,7 @@ class PasswordResetTest extends TestCase
      */
     public function unauthenticated_user_can_request_password_reset()
     {
+        Notification::fake();
         $user = factory(User::class)->create();
 
         $response = $this->post('password/email', [
@@ -50,9 +40,7 @@ class PasswordResetTest extends TestCase
             1,
             DB::select("SELECT * FROM password_resets WHERE email = :email", ['email' => $user->email])
         );
-        $this->seeEmailWasSent();
-        $this->seeEmailsSent(1);
-        $this->seeEmailTo($user->email);
+        Notification::assertSentTo($user, ResetPassword::class);
     }
 
     /**

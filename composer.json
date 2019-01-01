@@ -33,11 +33,7 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        },
-        "files": [
-            "tests/Helpers/Traits/EmailTestHelpers.php",
-            "tests/Helpers/TestingMailEventListener.php"
-        ]
+        }
     },
     "scripts": {
         "post-autoload-dump": [
