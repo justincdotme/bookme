@@ -29,7 +29,7 @@ class ReservationConfirmationEmailTest extends TestCase
         $rendered = $this->renderMailable($email);
 
         $this->assertContains('<h1>Reservation Confirmation</h1>', $rendered);
-        $this->assertContains($this->user->first_name, $rendered);
+        $this->assertContains($this->user->first_name, e($rendered));
         $this->assertContains($this->reservation->formatted_date_start, $rendered);
         $this->assertContains($this->reservation->formatted_date_end, $rendered);
         $this->assertContains((string)$this->reservation->getLengthOfStay(), $rendered);
