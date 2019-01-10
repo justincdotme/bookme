@@ -1,6 +1,8 @@
 # bookMe
  bookMe is a PHP5 application for booking and managing rental property reservations. 
  
+ Version 2 is in the works, please see the development branch for a sneak preview.
+ 
  The goal of this project was to create a fully functional property booking application from scratch using MVC architecture.
  
  The following features were required for this project:
