@@ -1,3 +1,8 @@
+# This project is archived and no longer maintained.
+
+> The code and its dependency tree may contain unpatched security vulnerabilities. It is preserved for archival purposes only and should not be used in any environment. No issues, pull requests, or updates will be accepted.
+
+---
 # bookMe [![Build Status](https://travis-ci.org/justincdotme/bookme.svg?branch=development)](https://travis-ci.org/justincdotme/bookme)
 
  bookMe is a Laravel 5 application for booking and managing rental property reservations. 
